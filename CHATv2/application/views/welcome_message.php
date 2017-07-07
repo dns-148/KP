@@ -20,7 +20,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 </head>
 <body>
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #990000;" >
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -32,7 +32,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">CHAT</a></li>
+        <li ><a href="#">CHAT</a></li>
       </ul>
     </div><!--/.nav-collapse -->
   </div>
