@@ -14,12 +14,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="<?php echo base_url(); ?>asset/JS/material.js"></script>
+      <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        $(function () {
+        var socket = io('http://localhost:3000');
+        $('form').submit(function(){
+          socket.emit('chat message', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+        socket.on('chat message', function(msg){
+          $('#messages').append($('<li>').text(msg));
+        });
+      });
+    </script>
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>asset/css/chat.css">
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>asset/css/search.css">
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>asset/css/materialkit.css">
 
 </head>
 <body>
+
 <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #990000;" >
   <div class="container-fluid">
     <div class="navbar-header">
@@ -86,23 +102,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <a type="button" class="btn btn-collapse btn-sm" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-down"></i> Sidebar</a>
       </p>
   
-      <div class="row">
-
-        <div class="col-md-9" >
+      <div class="row" >
+        <div class="col-sm-9" >
           <div class="thumbnail">
-            <div class="caption">
+            <div class="caption" id="messages" >
 
               <p>blah blah</p>
               
             </div>
           </div><!--/.thumbnail-->
         </div><!--/.col-3-->
-        
-  
       </div><!--/.row-->
+ 
+      <div class="row">
+        <div class="col-sm-9" >
+        <!--   <div class="thumbnail">
+            <div class="caption">
+              <p>blah blah</p>
+            </div>
+          </div><!--/.thumbnail--> 
+           <form action="">
+            <input id="m" autocomplete="off" /><button>Send</button>
+          </form>
+        </div><!--/.col-3-->
+      </div><!--/.row-->
+
+
     </div><!-- /.cols-->
   </div><!-- /.row-->
 </div><!-- /.container -->
+
 </body>
 <footer></footer>
 </html>
