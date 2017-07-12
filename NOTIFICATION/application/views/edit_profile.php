@@ -287,7 +287,7 @@
 	            </div>
 	          </div>
 	          <div class="form-group">
-	            <label class="col-lg-3 control-label">Alamat:</label>
+	            <label class="col-lg-3 control-label">Address:</label>
 	            <div class="col-lg-8">
 	              <input class="form-control" type="text" value="">
 	            </div>
@@ -299,13 +299,13 @@
 	            </div>
 	          </div>
 	          <div class="form-group">
-	            <label class="col-lg-3 control-label">No. Telpon:</label>
+	            <label class="col-lg-3 control-label">Telephone:</label>
 	            <div class="col-lg-8">
 	              <input class="form-control" type="text" value="">
 	            </div>
 	          </div>
 	          <div class="form-group">
-	            <label class="col-lg-3 control-label">Divisi:</label>
+	            <label class="col-lg-3 control-label">Division:</label>
 	            <div class="col-lg-8">
 	              <div class="ui-select">
 	                <select id="user_time_zone" class="form-control">
@@ -313,7 +313,7 @@
 	                  <option value="Alaska">IT</option>
 	                  <option value="Alaska">Marketing</option>
 	                  <option value="Hawaii">Production</option>
-	                  <option value="Alaska"></option>
+	                  <option value="Alaska">Administration</option>
 	                </select>
 	              </div>
 	            </div>
@@ -323,7 +323,7 @@
 	            <div class="col-md-8">
 	              <input class="form-control" type="password" value="">
 	            </div>
-	            <label class="col-md-3 control-label">Konfirmasi password:</label>
+	            <label class="col-md-3 control-label">Confirm password:</label>
 	            <div class="col-md-8">
 	              <input class="form-control" type="password" value="">
 	            </div>
