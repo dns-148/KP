@@ -71,8 +71,8 @@
               prompt : 'Please enter your password'
             },
             {
-              type   : 'length[6]',
-              prompt : 'Your password must be at least 6 characters'
+              type   : 'length[4]',
+              prompt : 'Your password must be at least 4 characters'
             }
           ]
         }
@@ -90,33 +90,33 @@
       <h2 class="ui teal image header">
         <img src="<?php echo base_url() ?>assets/images/logo.png" class="image">
         <div class="content">
-          Log-in to your account
+          Login
         </div>
       </h2>
-      <form class="ui large form" action="<?php echo base_url('user_login/login'); ?>" method="post">
-        <div class="ui stacked segment">
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="user icon"></i>
-              <input type="text" name="email" placeholder="E-mail address">
-            </div>
+      <?php echo form_open('user_login/login', array('class'=>'ui large form')); ?>
+    <!-- <form class="ui large form"> -->
+      <div class="ui stacked segment">
+        <div class="field">
+          <div class="ui left icon input">
+
+            <i class="user icon"></i>
+             <?php echo form_input('email', '', array('placeholder'=> 'Email Address', 'type'=>'email')); ?>
+            <!-- <input type="text" name="NRP" placeholder="NRP"> -->
           </div>
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="lock icon"></i>
-              <input type="password" name="password" placeholder="Password">
-            </div>
-          </div>
-          <div class="ui fluid large teal submit button" type="submit">Login</div>
         </div>
-
-        <div class="ui error message"></div>
-
-      </form>
-
-      <div class="ui message">
-        New to us? <a href="#">Sign Up</a>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <?php echo form_password('password', '', array('placeholder'=> 'Password', 'type'=>'password')); ?>
+            <!-- <input type="password" name="password" placeholder="Password"> -->
+          </div>
+        </div>
+        <?php echo form_submit('submit', 'Login', array('class'=>'ui fluid large teal submit button')); ?>
+        <!-- <div class="ui fluid large teal submit button">Login</div> -->
       </div>
+
+      <div class="ui error message"></div>
+      <?php echo form_close(); ?>
     </div>
   </div>
 
