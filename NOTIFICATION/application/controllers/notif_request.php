@@ -11,7 +11,6 @@ class notif_request extends CI_Controller {
   public function countBirthday() {
         $data = $this->Karyawan->getBirthdayRequest();
         echo $data;
-        
-       // $this->load->view('home');
+        //$this->load->view('home');
     }
 }

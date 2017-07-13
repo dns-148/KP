@@ -1,13 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class login extends CI_Controller {
-
-	public function __construct()
-	{
-		parent::__construct();
-		$this->load->model('Karyawan');
-	}
+class user_login extends CI_Controller {
 
 	public function index()
 	{
@@ -16,7 +10,6 @@ class login extends CI_Controller {
 
 	public function login()
 	{
-		$username = $this->input->post('nama');
 		$email = $this->input->post('email');
 		$password = $this->input->post('password');
 		$where = array(
@@ -27,13 +20,13 @@ class login extends CI_Controller {
 		if($cek > 0){
 
 			$data_session = array(
-				'nama' => $username,
+				'email' => $email,
 				'status' => "login"
 				);
 
 			$this->session->set_userdata($data_session);
 
-			redirect(base_url("home"));
+			redirect(base_url('notif_request'));
 
 		}
 		else{
@@ -44,6 +37,6 @@ class login extends CI_Controller {
 	public function logout()
 	{
 		$this->session->sess_destroy();
-		redirect(base_url('login'));
+		redirect(base_url('user_login'));
 	}
 }

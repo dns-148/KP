@@ -210,15 +210,15 @@
                     </li>
                   </div>
                   <div class="notify-drop-footer text-center">
-                    <a href=""><i class="fa fa-eye"></i> Tümünü Göster</a>
+                    <a href=""><i class="fa fa-eye"></i> See All </a>
                   </div>
                 </ul>
               </li>
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbspUser<span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp<?php echo $this->session->userdata("email"); ?><span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Edit Profile</a></li>
-                  <li><a href="#">Logout</a></li>
+                  <li><a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbspEdit Profile</a></li>
+                  <li><a href="<?php echo base_url('user_login/logout'); ?>"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbspLogout</a></li>
                 </ul>
               </li>
             </ul>
