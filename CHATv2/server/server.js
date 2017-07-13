@@ -20,6 +20,7 @@ io.on('connection', function(socket){
   });
   
   socket.on("disconnect", function(){
+    delete names[users[socket.id]];
     delete users[socket.id];
   });
 });
