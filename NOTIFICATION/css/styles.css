@@ -24,7 +24,7 @@ hr {
 
 .wrapper, .row {
    height: 100%;
-   margin-left:0;
+   margin-left:90;
    margin-right:0;
 }
 
@@ -56,7 +56,7 @@ hr {
 .box {
   	bottom: 0; /* increase for footer use */
     left: 0;
-    position: absolute;
+    position: left;
     right: 0;
     top: 0;
     background-color:#444444;

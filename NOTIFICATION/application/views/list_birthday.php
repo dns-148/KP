@@ -6,7 +6,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<meta charset="utf-8">
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<title></title>
 		<meta name="generator" content="Bootply" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link href="<?php echo base_url()?>assets/css/bootstrap.css" rel="stylesheet">
@@ -185,7 +184,9 @@ hr {
 /* bootstrap overrides */
 
 h1,h2,h3 {
-   font-weight:800;
+   font-family:"Lato";
+   src:url('http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic');
+   text-decoration: underline;
 }
 
 .navbar-toggle, .close {
@@ -417,6 +418,11 @@ small.text-muted {
   .navbar-default .dropdown-menu.notify-drop .notify-drop-footer a:hover {
     color: #333;
   }
+  h2
+  {
+    text-align: center;
+    color: white;
+  }
   </style>
 
   <script src="<?php echo base_url()?>assets/js/jquery.min.js"></script>
@@ -505,7 +511,7 @@ small.text-muted {
 	    </div>
 	  </div>
 	</div>
-
+<h2>List of birthday</h2>
 <div class="wrapper">
     <div class="box-center">
         <div class="row row-offcanvas row-offcanvas-center">
