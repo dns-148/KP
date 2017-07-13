@@ -21,15 +21,16 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>asset/css/login.css">
 </head>
 <body>
+<?php echo validation_errors(); ?>
 <div class="container-fluid form">
-	<form>
+   	<?php echo form_open('user_auth'); ?>
 	    <div class="form-group">
-	        <label for="text">Username or email:</label>
-	        <input type="text" class="form-control" id="email" required>
+	        <label for="text">Username:</label>
+	        <input type="text" class="form-control" name="username" id="username" value="<?php echo set_value('username'); ?>" required>
 	    </div>
 	    <div class="form-group">
-	        <label for="pwd">Password:</label>
-	        <input type="password" class="form-control" id="pwd" required>
+	        <label for="password">Password:</label>
+	        <input type="password" class="form-control" name="password" id="password" required>
 	    </div>
 	    <div class="checkbox">
 	        <label>

@@ -52,6 +52,7 @@ body{
 #page-content-wrapper {
     width: 100%;
 }
+
 #sidebar_menu li a,
 .sidebar-nav li a {
     color: #999;
@@ -108,6 +109,7 @@ body{
     color: #fff;
     background: none;
 }
+
 #main_icon {
     float: right;
     padding-right: 65px;
@@ -241,6 +243,7 @@ body{
 
 .chat-inside{
 	height: 80vh;
+    overflow-x: hidden;
 	overflow-y:auto; 
 }
 
@@ -277,13 +280,13 @@ body{
 .chaasee {
 	padding: 0px;
 	padding-top: 1vh;
-    position: relative;
+    /*position: relative;*/
     margin: 0;
     padding-left: 1vw;
 }
 
 .chaasee img {
-	display: block;
+	/*display: block;*/
     width: 10vmin;
     height: 10vmin;
     border-radius: 50%;
@@ -301,6 +304,17 @@ body{
  	border-top: 2vmin transparent;
 	border-bottom: 2vmin solid transparent; 
 	border-right: 2vmin solid white; 
+}
+
+.arrow_right{
+    width: 0; 
+    height: 0; 
+    margin-top: 1vh;
+    margin-left: 0vw;
+    margin-right: -2vw;
+    border-top: 2vmin transparent;
+    border-bottom: 2vmin solid transparent; 
+    border-left: 2vmin solid rgb(51, 122, 183); 
 }
 
 .in_message{
@@ -326,6 +340,15 @@ body{
 
 .box_sendbutton{
 	padding: 0;
+}
+
+.msg_send{
+    background: rgb(51, 122, 183);
+    border-color: rgb(51, 122, 183);
+}
+
+.m_icon{
+    font-size: 6vmin;
 }
 
 @media screen and (max-width: 768px), screen and (max-aspect-ratio: 1/1){
@@ -369,4 +392,16 @@ body{
 	.r-rigged{
 		height: 6vh;
 	}
+
+    .spaced{
+        display: none;
+    }
+
+    .arrow_right{
+        margin-right: -6vw; 
+    }
+
+    .main_icon{
+        padding-top: 0;
+    }
 }

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Trust Chat</title>
+    <title>Chat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Latest compiled and minified CSS -->
@@ -18,21 +18,37 @@
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+        var socket = io('http://localhost:3000');
+
+        function join(){
+            var nama = '<?php echo $nama ?>';
+            var username = '<?php echo $username ?>';
+            socket.emit("join", username, nama);
+        };
+
         $("#menu-toggle").click(function(e) {
             e.preventDefault();
             $("#wrapper").toggleClass("active");
         });
 
         $(function() {
-            var socket = io('http://localhost:3000');
             $('form').submit(function() {
-                socket.emit('chat message', $('#m').val());
-                $('#m').val('');
+                var msg_val =  $('#m_send').val();
+                socket.emit('chat message', $('#m_send').val());
+                $('#m_send').val('');
                 return false;
             });
 
-            socket.on('chat message', function(msg) {
-                $('.messages').append($('<li>').text(msg));
+            socket.on('chat message', function(username, who, msg) {
+                var dt = new Date();
+                var time = who + " • " +dt.getDate() + "-" +(dt.getMonth()+1) + "-" + dt.getFullYear() + " " + dt.getHours() + ":" + dt.getMinutes();
+                if(username == '<?php echo $username ?>'){
+                    $('.message_field').append('<div class="row"><div class="col-xs-5"></div><div class="col-xs-7"><div class="col-xs-2 spaced"></div><div class="col-xs-2 chaasee float_right"><img src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png"></div><div class="col-xs-1 arrow_right float_right"></div><div class="col-xs-7 messages msg_send float_right"><div class="caption"></div></div></div></div>');
+                }else{
+                    $('.message_field').append('<div class="row "><div class="col-xs-7"><div class="col-xs-2 chaasee"><img src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png"></div><div class="col-xs-1 arrow_left"></div><div class="col-xs-7 messages"><div class="caption msg_receive"></div></div></div><div class="col-xs-5"></div></div>');
+                }
+                $('.caption').last().append($('<p>').text(msg));
+                $('.caption').last().append($('<time>').text(time));
             });
         });
     </script>
@@ -52,7 +68,7 @@
                         </a>
                     </div>
                     <div class="float_right in_right">
-                        <a><span class="sub_icon fa fa-ellipsis-v"></span></a>
+                        <a><span class="fa fa-ellipsis-v sub_icon"></span></a>
                     </div>
                     <div class="float_right in_right">
                         <a><span class="sub_icon fa fa-comments-o"></span></a>
@@ -103,38 +119,21 @@
 
                         <div class="collapse navbar-collapse">
                             <ul class="nav navbar-nav">
-                                <li></li>
+                                <li><a class="m_icon" style="padding-top: 1vh;" href="<?php echo base_url('login/logout'); ?>"><span class="sub_icon fa fa-sign-out"></span></a></li>
                             </ul>
                         </div>
                         <!--/.nav-collapse -->
                     </div>
                 </div>
                 <div class="chat-inside">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-xs-7">
-                                <div class="col-xs-2 chaasee">
-                                    <img src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png">
-                                </div>
-                                <div class="col-xs-1 arrow_left">
-                                </div>
-                                <div class="col-xs-7 messages">
-                                    <div class="caption msg_send">
-                                        <p>blah blah</p>
-                                        <time datetime="2009-11-13T20:00">Lorem ipsum • 51 min</time>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-5">
-                            </div>
-                        </div>
+                    <div class="container-fluid message_field">
                     </div>
                 </div>
                 <div class="navbar navbar-inverse white_color left_border">
                     <div class="container-fluid">
                         <form action="">
                             <div class="col-xs-10">
-                                <input id="m" class="in_message" type="text" autocomplete="off" />
+                                <input id="m_send" class="in_message" autocomplete="off" />
                             </div>
                             <div class="col-xs-2 box_sendbutton">
                                 <button class="btn btn-success send_msg">Send</button>
@@ -146,6 +145,8 @@
         </div>
         <!-- /.container -->
     </div>
+    <script type="text/javascript">
+        join();
+    </script>
 </body>
-
 </html>
