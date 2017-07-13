@@ -7,7 +7,7 @@
   <meta name="author" content="Alvarez.is - BlackTie.co">
   <link rel="shortcut icon" href="assets/ico/favicon.png">
 
-  <title>Pratt - Free Bootstrap 3 Theme</title>
+  <title>BirthApp- Birthday Application</title>
 
   <!-- Bootstrap core CSS -->
   <link href="<?php echo base_url()?>assets/css/bootstrap.css" rel="stylesheet">
@@ -104,7 +104,7 @@
   }
   .navbar-default .dropdown-menu.notify-drop .drop-content > li p {
     font-size: 11px;
-    color: #666;
+    color: #f7cdcd;
     font-weight: normal;
     margin: 3px 0;
   }
@@ -188,24 +188,10 @@
                   <div class="drop-content">
                     <li>
                       <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="http://placehold.it/45x45" alt=""></div></div>
-                      <div class="col-md-9 col-sm-9 col-xs-9 pd-l0"><a href="">Ahmet</a> yorumladı. <a href="">Çicek bahçeleri...</a> <a href="" class="rIcon"><i class="fa fa-dot-circle-o"></i></a>
+                      <div class="col-md-9 col-sm-9 col-xs-9 pd-l0"><a href="">Nia Kurnia M  </a> have a birthday today <a href=""></a> <a href="<?php echo base_url(); ?>birthday/list_birthday" class="rIcon"><i class="fa fa-dot-circle-o"></i></a>
 
                         <hr>
-                        <p class="time">Şimdi</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="http://placehold.it/45x45" alt=""></div></div>
-                      <div class="col-md-9 col-sm-9 col-xs-9 pd-l0"><a href="">Ahmet</a> yorumladı. <a href="">Çicek bahçeleri...</a> <a href="" class="rIcon"><i class="fa fa-dot-circle-o"></i></a>
-                        <p>Lorem ipsum sit dolor amet consilium.</p>
-                        <p class="time">1 Saat önce</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="http://placehold.it/45x45" alt=""></div></div>
-                      <div class="col-md-9 col-sm-9 col-xs-9 pd-l0"><a href="">Ahmet</a> yorumladı. <a href="">Çicek bahçeleri...</a> <a href="" class="rIcon"><i class="fa fa-dot-circle-o"></i></a>
-                        <p>Lorem ipsum sit dolor amet consilium.</p>
-                        <p class="time">2 Hafta önce</p>
+                        <p class="time">1 hour ago</p>
                       </div>
                     </li>
                   </div>
@@ -217,8 +203,13 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp<?php echo $this->session->userdata("email"); ?><span class="caret"></span></a>
                 <ul class="dropdown-menu">
+<<<<<<< HEAD
                   <li><a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbspEdit Profile</a></li>
                   <li><a href="<?php echo base_url('user_login/logout'); ?>"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbspLogout</a></li>
+=======
+                  <li><a href="<?php echo base_url(); ?>profil/edit_profile">Profile</a></li>
+                  <li><a href="#">Logout</a></li>
+>>>>>>> d9884339feda715706f5f43755ece96a5f1309ff
                 </ul>
               </li>
             </ul>
