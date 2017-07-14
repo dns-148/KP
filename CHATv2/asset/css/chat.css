@@ -262,6 +262,7 @@ body{
   height: inherit;
   padding: 0px;
   padding-left: 1vw;
+  word-wrap: break-word;
 }
 
 .caption {

@@ -15,15 +15,16 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url(); ?>asset/JS/material.js"></script>
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="http://192.168.0.110:3000/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-        var socket = io('http://localhost:3000');
+        var socket = io('http://192.168.0.110:3000');
 
         function join(){
             var nama = '<?php echo $nama ?>';
             var username = '<?php echo $username ?>';
-            socket.emit("join", username, nama);
+            var room = '<?php echo $room ?>';
+            socket.emit("join", username, nama, room);
         };
 
         $("#menu-toggle").click(function(e) {
@@ -33,15 +34,16 @@
 
         $(function() {
             $('form').submit(function() {
+                var dt = new Date();
+                var time = dt.getDate() + "/" +(dt.getMonth()+1) + "/" + dt.getFullYear() + "  " + dt.getHours() + ":" + dt.getMinutes();
                 var msg_val =  $('#m_send').val();
-                socket.emit('chat message', $('#m_send').val());
+                socket.emit('chat message', $('#m_send').val(), time);
                 $('#m_send').val('');
                 return false;
             });
 
-            socket.on('chat message', function(username, who, msg) {
-                var dt = new Date();
-                var time = who + " • " +dt.getDate() + "-" +(dt.getMonth()+1) + "-" + dt.getFullYear() + " " + dt.getHours() + ":" + dt.getMinutes();
+            socket.on('chat message', function(username, who, msg, s_time) {
+                var time = who + " • " + s_time;
                 if(username == '<?php echo $username ?>'){
                     $('.message_field').append('<div class="row"><div class="col-xs-5"></div><div class="col-xs-7"><div class="col-xs-2 spaced"></div><div class="col-xs-2 chaasee float_right"><img src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png"></div><div class="col-xs-1 arrow_right float_right"></div><div class="col-xs-7 messages msg_send float_right"><div class="caption"></div></div></div></div>');
                 }else{
@@ -76,7 +78,7 @@
                 </div>
                 <ul class="sidebar-nav" id="sidebar">
                     <li class="sidebar-nav blue_border il_chat">
-                        <a class="il_chat">
+                        <a class="il_chat" href="<?php echo base_url('chat/index/1'); ?>">
                             <div class="col-sm-3 rigged-3">
                                 <div class="chatar">
                                     <img alt="" src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png">
@@ -99,6 +101,30 @@
                             </div>
                         </a>
                     </li>
+                     <li class="sidebar-nav blue_border il_chat">
+                        <a class="il_chat" href="<?php echo base_url('chat/index/2'); ?>">
+                            <div class="col-sm-3 rigged-3">
+                                <div class="chatar">
+                                    <img alt="" src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png">
+                                </div>
+                            </div>
+                            <div class="col-sm-6 rigged-6">
+                                <div class="row r-rigged">
+                                    <p>Title Chat #2</p>
+                                </div>
+                                <div class="row r-rigged">
+                                    <p>Lorem Ipsum #2</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 rigged-3">
+                                <div class="row">
+                                    <p class="chat_time">00:00</p>
+                                </div>
+                                <div class="row">
+                                </div>
+                            </div>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -106,14 +132,17 @@
             <div class="page-content inset">
                 <div class="navbar navbar-inverse no_all red_color left_border">
                     <div class="container-fluid">
-                        <div class="navbar-header">
+                        <div class="col-xs-10 navbar-header">
                             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                             </button>
-                            <div class="avatar n-chat" style="width: 10vh;">
+                            <div class="col-xs-3 avatar n-chat" style="width: 10vh;">
                                 <img alt="" src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png">
+                            </div>
+                            <div class="col-xs-5" style="padding-right: 0px; padding-top: 2.5vh;">
+                                <span><text style="color: black; font-size: 3vmin;">Room #<?php echo $room ?></text></span>
                             </div>
                         </div>
 

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class chat extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -21,7 +21,16 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 		if($this->session->userdata('logged_in')){
-			redirect('chat', 'refresh');
+			$prev_id = $this->uri->segment(3);
+			$session_data = $this->session->userdata('logged_in');
+     		$data['username'] = $session_data['username'];
+     		$data['nama'] = $session_data['nama'];
+     		if($prev_id != NULL){
+     			$data['room'] = $prev_id;
+     		}else{
+     			$data['room'] = $session_data['room'];
+     		} 
+     		$this->load->view('chat', $data);
 		}else{
 			redirect('login', 'refresh');
 		}
