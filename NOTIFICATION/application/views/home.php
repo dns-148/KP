@@ -104,7 +104,7 @@
   }
   .navbar-default .dropdown-menu.notify-drop .drop-content > li p {
     font-size: 11px;
-    color: #f7cdcd;
+    color: #666;
     font-weight: normal;
     margin: 3px 0;
   }
@@ -169,8 +169,12 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
+<<<<<<< HEAD
             <li><a href="#">Home</a></li>
             <li><a href="#">Letter</a></li>
+=======
+            <li><a href="<?php echo base_url(); ?>letter/letter_request">Letter</a></li>
+>>>>>>> 958441ae95e5ddbaf078d999045779c57739484b
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">

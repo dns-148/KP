@@ -298,30 +298,9 @@ small.text-muted {
  * off canvas sidebar
  * --------------------------------------------------
  */
-@media screen and (max-width: 100px) {
-  .row-offcanvas {
-    position: relative;
-    -webkit-transition: all 0.25s ease-out;
-    -moz-transition: all 0.25s ease-out;
-    transition: all 0.25s ease-out;
-  }
 
-  .row-offcanvas-left.active {
-    left: 33%;
-  }
+/*------------------css navbar-----------------*/
 
-  .row-offcanvas-left.active .sidebar-offcanvas {
-    left: -33%;
-    position: absolute;
-    top: 0;
-    width: 33%;
-    margin-left: 5px;
-  }
-
-  #sidebar, #sidebar a, #sidebar-footer a {
-    padding-left:3px;
-  }
-}
 .navbar-default .dropdown-menu.notify-drop {
     min-width: 330px;
     background-color: #fff;
@@ -553,7 +532,7 @@ small.text-muted {
                                      <div class="form-group" style="padding:14px;">
                                       <textarea class="form-control" placeholder="Write a birthday wish"></textarea>
                                     </div>
-                                    <button class="btn btn-primary pull-right" type="button">Send</button><ul class="list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul>
+                                    <button class="btn btn-primary pull-right" type="button">Send</button><ul class="list-inline"><li><a href=""><i class=""></i></a></li><li><a href=""><i class=""></i></a></li><li><a href=""><i class=""></i></a></li></ul>
                                   </form>
                               </div>
 
