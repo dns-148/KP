@@ -30,7 +30,10 @@ class user_login extends CI_Controller {
 
 		}
 		else{
-			echo "Email or password is incorrect!";
+			echo "<script>
+				alert('Email or password is incorrect');
+				window.location.href='index';
+				</script>";
 		}
 	}
 

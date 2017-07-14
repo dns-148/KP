@@ -90,7 +90,7 @@
       <h2 class="ui teal image header">
         <img src="<?php echo base_url() ?>assets/images/logo.png" class="image">
         <div class="content">
-          Login
+          BirtApp Login
         </div>
       </h2>
       <?php echo form_open('user_login/login', array('class'=>'ui large form')); ?>

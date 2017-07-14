@@ -210,13 +210,13 @@
 	                  </div>
 	                </ul>
 	              </li>
-	              <li class="dropdown">
-	                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbspUser<span class="caret"></span></a>
-	                <ul class="dropdown-menu">
-	                  <li><a href="<?php echo base_url(); ?>profil/edit_profile">Profile</a></li>
-	                  <li><a href="#">Logout</a></li>
-	                </ul>
-	              </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp<?php echo $this->session->userdata("email"); ?><span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="<?php echo base_url(); ?>profil/edit_profile"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbspEdit Profile</a></li>
+                    <li><a href="<?php echo base_url('user_login/logout'); ?>"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbspLogout</a></li>
+                  </ul>
+                </li>
 	            </ul>
 	          </div><!-- /.navbar-collapse -->
 	        </div><!-- /.container-fluid -->
@@ -225,6 +225,88 @@
 	  </div>
 	</div>
 
+  <div class="container">
+      <h1>Edit Profile</h1>
+      <hr>
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-3">
+          <div class="text-center">
+            <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
+            <h6>Upload your photo</h6>
+
+            <input type="file" class="form-control">
+          </div>
+        </div>
+
+        <!-- edit form column -->
+        <div class="col-md-9 personal-info">
+          <!--div class="alert alert-info alert-dismissable">
+            <a class="panel-close close" data-dismiss="alert">×</a>
+            <i class="fa fa-coffee"></i>
+            This is an <strong>.alert</strong>. Use this to show important messages to the user.
+          </div-->
+          <h3>Personal Info</h3>
+
+          <?php echo form_open('profile/save_profile', array('class'=>'form-horizontal', 'role'=>'form')); ?>
+          <?php echo form_hidden('nrp', $this->uri->segment(3));?>
+            <div class="form-group">
+              <label class="col-lg-3 control-label">Name:</label>
+              <div class="col-lg-8">
+                <?php echo form_input ('nama',$tangkap['nama'], array('placeholder'=> 'nama', 'class'=> 'form-control', 'type'=>'text'));?>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-3 control-label">Address:</label>
+              <div class="col-lg-8">
+                  <?php echo form_input ('alamat',$tangkap['alamat'], array('placeholder'=> 'alamat', 'class'=> 'form-control', 'type'=>'text'));?>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-3 control-label">Email:</label>
+              <div class="col-lg-8">
+                <?php echo form_input ('email',$tangkap['email'], array('placeholder'=> 'email', 'class'=> 'form-control', 'type'=>'email'));?>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-3 control-label">Phone:</label>
+              <div class="col-lg-8">
+                <?php echo form_input ('no_telp',$tangkap['no_telp'], array('placeholder'=> 'no_telp', 'class'=> 'form-control', 'type'=>'text'));?>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-3 control-label">Division:</label>
+              <div class="col-lg-8">
+                <div class="ui-select">
+                  <select id="user_time_zone" class="form-control">
+                    <option value="Hawaii"></option>
+                    <option value="Alaska">IT</option>
+                    <option value="Alaska">Marketing</option>
+                    <option value="Hawaii">Production</option>
+                    <option value="Alaska"></option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label">Password:</label>
+              <div class="col-md-8">
+                <input class="form-control" type="password" value="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label"></label>
+              <div class="col-md-8">
+                <input type="button" class="btn btn-primary" value="Save Changes">
+                <span></span>
+                <input type="reset" class="btn btn-default" value="Cancel">
+              </div>
+            </div>
+          </form>
+        </div>
+    </div>
+  </div>
+<hr>
 	<!-- Bootstrap core JavaScript
 	================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
@@ -256,90 +338,5 @@
 	  ajax_refreshBirthdayCounts();
 	  console.log('test');
 	</script>
-	<div class="container">
-	    <h1>Edit Profile</h1>
-	  	<hr>
-		<div class="row">
-	      <!-- left column -->
-	      <div class="col-md-3">
-	        <div class="text-center">
-	          <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
-	          <h6>Upload a different photo...</h6>
-	          
-	          <input type="file" class="form-control">
-	        </div>
-	      </div>
-	      
-	      <!-- edit form column -->
-	      <div class="col-md-9 personal-info">
-	        <!--div class="alert alert-info alert-dismissable">
-	          <a class="panel-close close" data-dismiss="alert">×</a> 
-	          <i class="fa fa-coffee"></i>
-	          This is an <strong>.alert</strong>. Use this to show important messages to the user.
-	        </div-->
-	        <h3>Personal info</h3>
-	        
-	        <form class="form-horizontal" role="form">
-	          <div class="form-group">
-	            <label class="col-lg-3 control-label">Name:</label>
-	            <div class="col-lg-8">
-	              <input class="form-control" type="text" value="">
-	            </div>
-	          </div>
-	          <div class="form-group">
-	            <label class="col-lg-3 control-label">Alamat:</label>
-	            <div class="col-lg-8">
-	              <input class="form-control" type="text" value="">
-	            </div>
-	          </div>
-	          <div class="form-group">
-	            <label class="col-lg-3 control-label">Email:</label>
-	            <div class="col-lg-8">
-	              <input class="form-control" type="text" value="">
-	            </div>
-	          </div>
-	          <div class="form-group">
-	            <label class="col-lg-3 control-label">No. Telpon:</label>
-	            <div class="col-lg-8">
-	              <input class="form-control" type="text" value="">
-	            </div>
-	          </div>
-	          <div class="form-group">
-	            <label class="col-lg-3 control-label">Divisi:</label>
-	            <div class="col-lg-8">
-	              <div class="ui-select">
-	                <select id="user_time_zone" class="form-control">
-	                  <option value="Hawaii"></option>
-	                  <option value="Alaska">IT</option>
-	                  <option value="Alaska">Marketing</option>
-	                  <option value="Hawaii">Production</option>
-	                  <option value="Alaska"></option>
-	                </select>
-	              </div>
-	            </div>
-	          </div>
-	          <div class="form-group">
-	            <label class="col-md-3 control-label">Password:</label>
-	            <div class="col-md-8">
-	              <input class="form-control" type="password" value="">
-	            </div>
-	            <label class="col-md-3 control-label">Konfirmasi password:</label>
-	            <div class="col-md-8">
-	              <input class="form-control" type="password" value="">
-	            </div>
-	          </div>
-	          <div class="form-group">
-	            <label class="col-md-3 control-label"></label>
-	            <div class="col-md-8">
-	              <input type="button" class="btn btn-primary" value="Save Changes">
-	              <span></span>
-	              <input type="reset" class="btn btn-default" value="Cancel">
-	            </div>
-	          </div>
-	        </form>
-	      </div>
-	  </div>
-	</div>
-	<hr>
 </body>
 </html>
