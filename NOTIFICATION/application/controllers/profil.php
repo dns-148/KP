@@ -11,7 +11,7 @@ class profil extends CI_Controller{
   public function edit_profile(){
     $id_karyawan =$this->uri->segment(3);
     $data['tangkap'] = $this->Karyawan->get_id($id_karyawan)->row_array();
-    $data['listdivisi'] = $this->Divisi->list_divisi();
+    //$data['listdivisi'] = $this->Divisi->list_divisi();
     $this->load->view('edit_profile', $data);
   }
 

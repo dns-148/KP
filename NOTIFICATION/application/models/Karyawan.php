@@ -9,9 +9,18 @@ class Karyawan extends CI_Model {
   }
 
   public function getBirthdayRequest() {
-    $querylineCount = "SELECT * FROM karyawan WHERE DATE_FORMAT(Tanggal_lahir,'%m-%d') = DATE_FORMAT(SYSDATE(), '%m-%d')";
+    $querylineCount = "SELECT * FROM karyawan WHERE DATE_FORMAT(tanggal_lahir,'%m-%d') = DATE_FORMAT(SYSDATE(), '%m-%d')";
     $query = $this->db->query($querylineCount);
     return $query->num_rows();
+  }
+
+  public function showBirthdayRequest() {
+    $querylineCount = "SELECT nama, tanggal_lahir FROM karyawan WHERE DATE_FORMAT(tanggal_lahir,'%m-%d') = DATE_FORMAT(SYSDATE(), '%m-%d')";
+    $query = $this->db->query($querylineCount);
+
+    if ($query->num_rows() > 0) {
+      return $query->result();
+    }
   }
 
   public function get_id($id_karyawan){

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Pratt - Free Bootstrap 3 Theme">
   <meta name="author" content="Alvarez.is - BlackTie.co">
-  <link rel="shortcut icon" href="assets/ico/favicon.png">
+  <link rel="shortcut icon" href="<?php echo base_url()?>assets/ico/favicon.png">
 
-  <title>BirthApp- Birthday Application</title>
+  <title>BirthApp - Birthday Application</title>
 
   <!-- Bootstrap core CSS -->
   <link href="<?php echo base_url()?>assets/css/bootstrap.css" rel="stylesheet">
@@ -169,12 +169,8 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-<<<<<<< HEAD
             <li><a href="#">Home</a></li>
-            <li><a href="#">Letter</a></li>
-=======
             <li><a href="<?php echo base_url(); ?>letter/letter_request">Letter</a></li>
->>>>>>> 958441ae95e5ddbaf078d999045779c57739484b
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
@@ -191,14 +187,26 @@
                   <!-- end notify title -->
                   <!-- notify content -->
                   <div class="drop-content">
-                    <li>
-                      <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="http://placehold.it/45x45" alt=""></div></div>
-                      <div class="col-md-9 col-sm-9 col-xs-9 pd-l0"><a href="">Nia Kurnia M  </a> have a birthday today <a href=""></a> <a href="<?php echo base_url(); ?>birthday/list_birthday" class="rIcon"><i class="fa fa-dot-circle-o"></i></a>
+                    <?php $no=0;
+                    foreach ($notifikasi as $row) {
+                      $no++;
+                      if($no % 2 == 0) {
+                        $strip = 'strip1';
+                      }
+                      else {
+                        $strip = 'strip2';
+                      }
 
-                        <hr>
-                        <p class="time">1 hour ago</p>
-                      </div>
-                    </li>
+                      echo'<li>
+                        <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="http://placehold.it/45x45" alt=""></div></div>
+                        <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
+                        <a href=\"#\" class=\"'.$strip.'\">'.$row->nama.' have birthday today!</a>
+                          <hr>
+                          <p class="time">Today</p>
+                        </div>
+                      </li>';
+                    }
+                    ?>
                   </div>
                   <div class="notify-drop-footer text-center">
                     <a href=""><i class="fa fa-eye"></i> See All </a>
@@ -208,7 +216,7 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp<?php echo $this->session->userdata("email"); ?><span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="<?php echo base_url(); ?>profil/edit_profile"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbspEdit Profile</a></li>
+                  <li><a href="<?php echo base_url('profil/edit_profile'); ?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbspEdit Profile</a></li>
                   <li><a href="<?php echo base_url('user_login/logout'); ?>"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbspLogout</a></li>
                 </ul>
               </li>
@@ -246,10 +254,10 @@ function ajax_refreshBirthdayCounts()
   }
 );
 }
-
   //setInterval("<function_name>",<timeinterval in milli seconds>)
   ajax_refreshBirthdayCounts();
   console.log('test');
 </script>
+
 </body>
 </html>

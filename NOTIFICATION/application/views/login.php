@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <!-- Site Properties -->
-  <title>Login Example - Semantic</title>
+  <title>BirthApp - Login</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>dist/components/reset.css">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>dist/components/site.css">
 
@@ -88,9 +88,9 @@
   <div class="ui middle aligned center aligned grid">
     <div class="column">
       <h2 class="ui teal image header">
-        <img src="<?php echo base_url() ?>assets/images/logo.png" class="image">
+        <img src="<?php echo base_url() ?>assets/images/gift.png" class="image">
         <div class="content">
-          BirtApp Login
+          BirthApp Login
         </div>
       </h2>
       <?php echo form_open('user_login/login', array('class'=>'ui large form')); ?>
@@ -111,7 +111,7 @@
             <!-- <input type="password" name="password" placeholder="Password"> -->
           </div>
         </div>
-        <?php echo form_submit('submit', 'Login', array('class'=>'ui fluid large teal submit button')); ?>
+        <?php echo form_submit('SUBMIT', 'Login', array('class'=>'ui fluid large teal submit button')); ?>
         <!-- <div class="ui fluid large teal submit button">Login</div> -->
       </div>
 
