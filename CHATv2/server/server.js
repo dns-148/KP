@@ -9,19 +9,20 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-  socket.on('join', function(username, name, room_id){
-      users[socket.id] = {"name" : name, "room_id" : room_id, "username" : username};
+  socket.on('join', function(username, name, room_id, img){
+      users[socket.id] = {"name" : name, "room_id" : room_id, "username" : username, "img" : img};
       socket.join(room_id);
   });
 
   socket.on('chat message', function(msg, time){
     console.log('message: ' + msg);
     console.log('room: ' + users[socket.id].room_id);
-    io.to(users[socket.id].room_id).emit('chat message', users[socket.id].username, users[socket.id].name, msg, time);
+    io.to(users[socket.id].room_id).emit('chat message', users[socket.id].username, users[socket.id].name, msg, time, users[socket.id].img);
   });
   
   socket.on("disconnect", function(){
     delete users[socket.id];
+    console.log('disconnect: ' + socket.id);
   });
 });
 

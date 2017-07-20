@@ -1,0 +1,41 @@
+body{
+	width: 100%;
+	overflow: hidden;
+}
+
+.main{
+	margin-top: 11vh;
+	overflow: hidden;
+	overflow-y: auto;
+	height: 80vh;
+	margin-bottom: 1vh; 
+}
+
+.footer{
+	height: 8vh;
+	bottom: 0px;
+}
+
+.chat_message{
+	margin-left: 5%;
+	height: 5vh;
+	width:95%;
+	overflow: hidden;
+	overflow-y: auto;
+}
+
+.sd_chatlist{
+	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.mod_receive{
+	background-color: rgba(1, 47, 106, 0.4); 
+	padding: 2vmin;
+}
+
+.mod_send{
+	background-color: rgba(180, 30, 30, 0.4); 
+	padding: 2vmin;
+}

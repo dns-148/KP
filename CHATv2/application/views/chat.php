@@ -15,10 +15,10 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url(); ?>asset/JS/material.js"></script>
-    <script src="http://192.168.0.110:3000/socket.io/socket.io.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-        var socket = io('http://192.168.0.110:3000');
+        var socket = io('http://localhost:3000');
 
         function join(){
             var nama = '<?php echo $nama ?>';
@@ -65,7 +65,7 @@
                     <div class="float_left in_left red_color hovering">
                         <a style="height: 10vh;">
                             <div class="avatar" style="width: 10vh;">
-                                <img alt="" src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png">
+                                <img alt="" src="<?php echo base_url('pro_pict/'); if($profilepict != NULL){echo $profilepict;}else{ echo 'user_0.png';}; ?>">
                             </div>
                         </a>
                     </div>
@@ -77,54 +77,7 @@
                     </div>
                 </div>
                 <ul class="sidebar-nav" id="sidebar">
-                    <li class="sidebar-nav blue_border il_chat">
-                        <a class="il_chat" href="<?php echo base_url('chat/index/1'); ?>">
-                            <div class="col-sm-3 rigged-3">
-                                <div class="chatar">
-                                    <img alt="" src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png">
-                                </div>
-                            </div>
-                            <div class="col-sm-6 rigged-6">
-                                <div class="row r-rigged">
-                                    <p>Title Chat #1</p>
-                                </div>
-                                <div class="row r-rigged">
-                                    <p>Lorem Ipsum #1</p>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 rigged-3">
-                                <div class="row">
-                                    <p class="chat_time">00:00</p>
-                                </div>
-                                <div class="row">
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                     <li class="sidebar-nav blue_border il_chat">
-                        <a class="il_chat" href="<?php echo base_url('chat/index/2'); ?>">
-                            <div class="col-sm-3 rigged-3">
-                                <div class="chatar">
-                                    <img alt="" src="http://gpfarah.com/gpfarahcom/wp-content/uploads/2014/05/13099629981030824019profile.svg_.hi_.png">
-                                </div>
-                            </div>
-                            <div class="col-sm-6 rigged-6">
-                                <div class="row r-rigged">
-                                    <p>Title Chat #2</p>
-                                </div>
-                                <div class="row r-rigged">
-                                    <p>Lorem Ipsum #2</p>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 rigged-3">
-                                <div class="row">
-                                    <p class="chat_time">00:00</p>
-                                </div>
-                                <div class="row">
-                                </div>
-                            </div>
-                        </a>
-                    </li>
+                    
                 </ul>
             </div>
         </div>
