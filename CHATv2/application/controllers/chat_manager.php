@@ -27,13 +27,21 @@ class chat_manager extends CI_Controller {
 	}
 
 	public function send_msg(){
-		$id_room = $this->input->post('room');
-		$room = 'public.Room' . $id_room;
-		$id_user = $this->input->post('id_user');
+		$room_id = $this->input->post('room');
+		$room = 'public.Room' . $room_id;
+		$user_id = $this->input->post('user_id');
 		$time = $this->input->post('time');
 		$tipe = $this->input->post('tipe');
 		$msg = $this->input->post('msg');
 
-		$this->db_chat->addChat($room, $id_user, $time, $tipe, $msg);
+		$this->db_chat->addChat($room, $user_id, $time, $tipe, $msg);
+	}
+
+	public function update_unread(){
+		$room_id = $this->input->post('room');
+		$user_id = $this->input->post('user_id');
+		$unread = $this->input->post('unread');
+
+		$this->db_user->updateUnread($room_id, $user_id, $unread);
 	}
 }

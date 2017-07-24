@@ -5,9 +5,9 @@ class user_auth extends CI_Controller {
 
 	public function index(){
 		$this->load->library('form_validation');
-		$this->form_validation->set_rules('username', 'Username', 'trim|required');
+		$this->form_validation->set_rules('email', 'Email', 'trim|required');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|callback_check_database');
-		$username = $this->input->post('username');
+		$username = $this->input->post('email');
 		if($this->form_validation->run() == FALSE)
 		{
 			$this->load->view('login_page');
@@ -19,15 +19,14 @@ class user_auth extends CI_Controller {
 	}
 
 	function check_database($password){
-	 	$username = $this->input->post('username');
-	 	$result = $this->db_user->login($username, $password);
+	 	$email = $this->input->post('email');
+	 	$result = $this->db_user->login($email, $password);
 	 	if($result){
 	 		$sess_array = array();
 
 			foreach($result as $row){
 				$sess_array = array(
 					'id' => $row->ID,
-					'username' => $row->Username,
 					'nama' => $row->Nama,
 					'profilepict' => $row->ProfilePict,
 					'room' => -1

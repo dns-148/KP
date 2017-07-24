@@ -25,8 +25,8 @@
 <div class="container-fluid form">
    	<?php echo form_open('user_auth'); ?>
 	    <div class="form-group">
-	        <label for="text">Username:</label>
-	        <input type="text" class="form-control" name="username" id="username" value="<?php echo set_value('username'); ?>" required>
+	        <label for="text">Email:</label>
+	        <input type="email" class="form-control" name="email" id="email" value="<?php echo set_value('email'); ?>" required>
 	    </div>
 	    <div class="form-group">
 	        <label for="password">Password:</label>

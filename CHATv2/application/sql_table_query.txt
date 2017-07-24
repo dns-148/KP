@@ -1,0 +1,58 @@
+CREATE TABLE public."refRoomUser"
+(
+    "idChatRoom" integer NOT NULL,
+    "idUser" integer NOT NULL,
+    "dateJoin" timestamp without time zone NOT NULL,
+    "countUnread" integer NOT NULL,
+    CONSTRAINT "refRoomUser_pkey" PRIMARY KEY ("idChatRoom", "idUser"),
+    CONSTRAINT "refToRoom" FOREIGN KEY ("idChatRoom")
+        REFERENCES public."listChatRoom" ("idRoom") MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT "refToUser" FOREIGN KEY ("idUser")
+        REFERENCES public."user" ("ID") MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)
+
+CREATE TABLE public."listFriend"
+(
+    "idUser1" integer NOT NULL,
+    "idUser2" integer NOT NULL,
+    CONSTRAINT "listFriend_pkey" PRIMARY KEY ("idUser1", "idUser2"),
+    CONSTRAINT "refUser1" FOREIGN KEY ("idUser1")
+        REFERENCES public."user" ("ID") MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT "refUser2" FOREIGN KEY ("idUser2")
+        REFERENCES public."user" ("ID") MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)
+
+CREATE TABLE public."listChatRoom"
+(
+    "idRoom" integer NOT NULL DEFAULT nextval('"listChatRoom_idRoom_seq"'::regclass),
+    "namaRoom" text COLLATE pg_catalog."default",
+    "idAdmin" integer,
+    tipe integer NOT NULL,
+    "roomPict" text COLLATE pg_catalog."default",
+    "timeCreated" timestamp without time zone,
+    CONSTRAINT "listChatRoom_pkey" PRIMARY KEY ("idRoom"),
+    CONSTRAINT "refAdmin" FOREIGN KEY ("idAdmin")
+        REFERENCES public."user" ("ID") MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+)
+
+CREATE TABLE public."user"
+(
+    "ID" serial NOT NULL,
+    "Nama" text COLLATE pg_catalog."default" NOT NULL,
+    "Status" text COLLATE pg_catalog."default" NOT NULL,
+    "Email" text COLLATE pg_catalog."default" NOT NULL,
+    "Password" text COLLATE pg_catalog."default" NOT NULL,
+    "ProfilePict" text COLLATE pg_catalog."default",
+    CONSTRAINT user_pkey PRIMARY KEY ("ID"),
+    CONSTRAINT unique_username UNIQUE ("Email")
+)
