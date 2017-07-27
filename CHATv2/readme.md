@@ -33,9 +33,14 @@ Fitur :
 	npm install
 	</pre>
 - ubah port chat server pada server.js sesuai keinginan, namun juga ubah port pada VIEW
+	<pre>
+	http.listen(3000, function(){
+	  console.log('listening on *:3000');
+	});
+	</pre>
 - jalankan chat server dengan perintah
 	<pre>
-		node server.js
+	node server.js
 	</pre>
 - akses aplikasi di browser alamat:port/CHATv2
 	<pre>
