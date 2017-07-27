@@ -15,7 +15,7 @@ Fitur :
 - Ubah konfigurasi Codeigniter yg terdapat di file config, ubah sesuai alamat dan port php
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	<pre>
-		$config['base_url'] = 'http://localhost:8000/TrustChatV1/';  
+		$config['base_url'] = 'http://localhost:8000/CHATv2/';  
 	</pre>
 - Ubah konfigurasi database yg terdapat di file database, sesuai dengan database yang digunakan.
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -33,6 +33,12 @@ Fitur :
 	npm install
 	</pre>
 - ubah port chat server pada server.js sesuai keinginan, namun juga ubah port pada VIEW
-- jalankan chat server dengan perintah node server.js
+- jalankan chat server dengan perintah
+	<pre>
+		node server.js
+	</pre>
 - akses aplikasi di browser alamat:port/CHATv2
+	<pre>
+	http://localhost:8000/CHATv2/
+	</pre>
 - login
