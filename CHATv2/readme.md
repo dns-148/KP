@@ -1,7 +1,8 @@
 # DOKUMENTASI APLIKASI CHAT
 
 ## DESKRIPSI
-Aplikasi untuk chat.
+Aplikasi untuk chat.  
+
 Fitur :
 - chatting
 - membuat grup
@@ -11,7 +12,7 @@ Fitur :
 - Download dan install XAMPP.
 - Jalankan file sql untuk database yang terdapat pada CHATv2\application 
 - Download atau clone CHATv2 letakkan pada htdocs
-- Ubah konfigurasi Codeigniter yg terdapat di file config
+- Ubah konfigurasi Codeigniter yg terdapat di file config, ubah sesuai alamat dan port php
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	<pre>
 		$config['base_url'] = 'http://localhost:8000/TrustChatV1/';  
