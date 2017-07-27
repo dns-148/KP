@@ -17,7 +17,7 @@ Fitur :
 	<pre>
 		$config['base_url'] = 'http://localhost:8000/TrustChatV1/';  
 	</pre>
-- Ubah konfigurasi database yg terdapat di file database
+- Ubah konfigurasi database yg terdapat di file database, sesuai dengan database yang digunakan.
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	<pre> 
 		$config['base_url'] = $db['default'] = array(
