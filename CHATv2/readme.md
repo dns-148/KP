@@ -1,6 +1,10 @@
 # DOKUMENTASI APLIKASI CHAT
 
 ## DESKRIPSI
+Aplikasi untuk chat.
+Fitur :
+- chatting
+- membuat grup
 
 ## CARA INSTALASI
 - Download dan install Node JS.
