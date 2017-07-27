@@ -28,7 +28,10 @@ Fitur :
 		'database' => 'COBA',
 		'dbdriver' => 'postgre',  
 	</pre>
-- jalankan file package.json pada CHATv2\server , install dg npm install
+- Dengan CMD , jalankan file package.json pada CHATv2\server , install dg npm install
+	<pre>
+	npm install
+	</pre>
 - ubah port chat server pada server.js sesuai keinginan, namun juga ubah port pada VIEW
 - jalankan chat server dengan perintah node server.js
 - akses aplikasi di browser alamat:port/CHATv2
