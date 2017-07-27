@@ -14,7 +14,7 @@ Fitur :
 - Ubah konfigurasi Codeigniter yg terdapat di file config
 - Ubah konfigurasi database yg terdapat di file database 
 - jalankan file package.json pada CHATv2\server , install dg npm install
-- ubah port chat server sesuai keinginan.
+- ubah port chat server pada server.js sesuai keinginan, namun juga ubah port pada VIEW
 - jalankan chat server dengan perintah node server.js
 - akses aplikasi di browser alamat:port/CHATv2
 - login
