@@ -12,17 +12,21 @@ Fitur :
 - Jalankan file sql untuk database yang terdapat pada CHATv2\application 
 - Download atau clone CHATv2 letakkan pada htdocs
 - Ubah konfigurasi Codeigniter yg terdapat di file config
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <pre> $config['base_url'] = 'http://localhost:8000/TrustChatV1/';  </pre>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<pre>
+		$config['base_url'] = 'http://localhost:8000/TrustChatV1/';  
+	</pre>
 - Ubah konfigurasi database yg terdapat di file database
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <pre> $config['base_url'] = $db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'postgres',
-	'password' => 'root',
-	'database' => 'COBA',
-	'dbdriver' => 'postgre',  </pre>
-
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	<pre> 
+		$config['base_url'] = $db['default'] = array(
+		'dsn'	=> '',
+		'hostname' => 'localhost',
+		'username' => 'postgres',
+		'password' => 'root',
+		'database' => 'COBA',
+		'dbdriver' => 'postgre',  
+	</pre>
 - jalankan file package.json pada CHATv2\server , install dg npm install
 - ubah port chat server pada server.js sesuai keinginan, namun juga ubah port pada VIEW
 - jalankan chat server dengan perintah node server.js
