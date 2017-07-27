@@ -2,7 +2,7 @@
 
 Class db_room extends CI_Model{
 	function info($id_room, $unread_count, $date_join){
-	    $this->db->select('idRoom, namaRoom, idAdmin, tipe, roomPict');
+	    $this->db->select('idRoom, namaRoom, idAdmin, tipe, roomPict, timeCreated');
 	    $this->db->from('public.listChatRoom');
 	    $this->db->where('idRoom', $id_room);
  
@@ -17,6 +17,7 @@ Class db_room extends CI_Model{
 					'id_admin' => $result[0]['idAdmin'],
 					'tipe' => $result[0]['tipe'],
 					'room_pict' => $result[0]['roomPict'],
+					'time_created' => $result[0]['timeCreated'],
 					'date_join' => $date_join,
 					'unread_count' => $unread_count
 				);
@@ -55,18 +56,32 @@ Class db_room extends CI_Model{
 		return $result;
 	}
 
-	function linkUser($list_user, $admin_id, $room_id){
-		$user = explode(',', $list_user);
-		$timestamp = date('Y-m-d H:i:s');
-		$data = array(
-			'idChatRoom' => $room_id,
-			'idUser' => $admin_id,
-			'dateJoin' => $timestamp,
-			'countUnread' => 0
-			);
-		$this->db->insert('public.refRoomUser', $data);
+	function getIdUserParticipate($room_id){
+		$formated_result = array();
+		$this->db->select('idUser');
+		$this->db->from('public.refRoomUser');
+		$this->db->where('idChatRoom', $room_id);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		foreach ($result as $row) {
+			array_push($formated_result, $row['idUser']);
+		}
+		return $formated_result;
+	}
 
-		foreach ($user as $id ) {
+	function linkUser($list_user, $admin_id, $room_id){
+		$timestamp = date('Y-m-d H:i:s');
+		if($admin_id > -1){
+			$data = array(
+				'idChatRoom' => $room_id,
+				'idUser' => $admin_id,
+				'dateJoin' => $timestamp,
+				'countUnread' => 0
+				);
+			$this->db->insert('public.refRoomUser', $data);
+		}
+
+		foreach ($list_user as $id ) {
 			$data = array(
 				'idChatRoom' => $room_id,
 				'idUser' => $id,
@@ -75,6 +90,12 @@ Class db_room extends CI_Model{
 			);
 			$this->db->insert('public.refRoomUser', $data);
 		}
+	}
+
+	function leaveRoom($room_id, $user_id){
+		$array = array('idUser' =>  $user_id, 'idChatRoom' => $room_id);
+		$this->db->where($array);
+  		$this->db->delete('public.refRoomUser');
 	}
 }
 ?>

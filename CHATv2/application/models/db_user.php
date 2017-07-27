@@ -18,6 +18,20 @@ Class db_user extends CI_Model{
 		}
 	}
 
+	function allUserData(){
+		$this->db->select('ID, Nama, ProfilePict');
+		$this->db->from('public.user');
+ 
+		$query = $this->db->get();
+	 
+		if($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}else{
+			return false;
+		}
+	}
+
 	function userData($id){
 		$this->db->select('ID, Nama, ProfilePict');
 		$this->db->from('public.user');

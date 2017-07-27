@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="<?php echo base_url('asset/css/modified.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Latest compiled JavaScript -->
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="http://192.168.0.107:3000/socket.io/socket.io.js"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.js"></script>
@@ -21,144 +21,198 @@
     <script src="<?php echo base_url('asset/JS/modified.js'); ?>"></script>
     <script>
         var socket;
-
-        function join(){
-            socket = io('http://localhost:3000');
-            var nama = '<?php echo $nama ?>';
-            var id = '<?php echo $id ?>';
-            var img = '<?php echo $profilepict ?>';
-            var room = '<?php echo $room ?>';
-            var room_list = <?php $temp = []; foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }; echo json_encode($temp);?>;
+        function join(nama, id, img, room, room_list){
+            socket = io('http://192.168.0.107:3000');
             socket.emit("join", id, nama, room, room_list, img);
         };
 
-        function scrolltobottom(){
-            var distance = $('.main')[0].scrollHeight;
-            $('.main').animate({scrollTop: distance}, 'slow');
-        }
-
-        function scroll(){
-            var unread = <?php echo $unread ?>;
-            if(unread > -1){
-                if(unread > 0 && <?php echo count($list_chat); ?> > 1){
-                    var child = $('#chat_' + '<?php echo (count($list_chat) - $unread)  ?>');
-                    var parent = $('#chat_1');
-                    var distance =  child.offset().top-parent.offset().top;
-                    $('.main').animate({scrollTop: distance}, 'slow');
-                }else{
-                    scrolltobottom();
-                }
-            }
-        };
-
-
-        $("#menu-toggle").click(function(e) {
-            e.preventDefault();
-            $("#wrapper").toggleClass("active");
-        });
-
-        $(function() {
-
+        $(function() { 
             socket.on('user logout', function(logout_id, remaining_id){
-                var temp_item = "#status_" + logout_id;
-                $(temp_item).text("Offline");
-                var temp_item = "#ledlamp_" + logout_id;
-                $(temp_item).removeClass('led-blue');
-                $(temp_item).addClass('led-red');
-
-                for(index = 0; index < remaining_id.length; index++){
-                    var temp_item = "#user_" + remaining_id[index];
-                    $(temp_item).prependTo("#list_user");
-                }
+                logoutuser(logout_id, remaining_id);
             });
 
             socket.on('new message notif', function(msg, time, room_id){
-                var temp_item = "#room_" + room_id;
-                $(temp_item).prependTo("#irp");
-                var temp_item = "#msg_new_" + room_id;
-                $(temp_item).text(msg);
-                var temp_item = "#msg_time_" + room_id;
-                $(temp_item).text(time);
-                if(room_id != '<?php echo $room ?>'){
-                    var temp_item = "#notif_" + room_id;
-                    var unread = parseInt($(temp_item).text()) + 1;
-                    $(temp_item).text(unread);
-                    $(temp_item).removeClass('hidden');
-
-                    $.ajax({
-                        url: '<?php echo base_url('chat_manager/update_unread') ?>',
-                        type: 'post',
-                        dataType : "json",
-                        data: { 
-                            room: room_id, 
-                            user_id: "<?php echo $id ?>",
-                            unread : unread
-                        },
-                        error: function(data){
-                            console.log(data);
-                        }
-                });
-                }
+                var update_url = '<?php echo base_url('chat_manager/update_unread') ?>';
+                newmessage(msg, time, '<?php echo $room ?>', room_id, update_url, '<?php echo $id ?>');
             });
 
             socket.on('update user', function (list_user){
-                
-                for (index = 0; index < list_user.length; index++) {
-                    var temp_item = "#user_" + list_user[index];
-                    $(temp_item).prependTo("#list_user");
-                    var temp_item = "#status_" + list_user[index];
-                    $(temp_item).text("Online");
-                    var temp_item = "#ledlamp_" + list_user[index];
-                    $(temp_item).removeClass('led-red');
-                    $(temp_item).addClass('led-blue');
+                updateuser(list_user);
+            });
+
+            $('#ok_createchat').click(function(e){
+                if($('#cc_chat_name').val() && $('#cc_friend_list').val()) {
+                    $('.md_createchat').modal('hide');
+                    $('.md_loading').modal('setting', 'closable', false).modal('show');
+
+                    $.ajax({
+                        url: "<?php echo base_url('chat_manager/create_roomchat') ?>",
+                        type: 'post',
+                        dataType : "json",
+                        data: { 
+                            group_name: $('#cc_chat_name').val(), 
+                            user_id: $('#cc_user_id').val(),
+                            friend_list : $('#cc_friend_list').val(),
+                        },
+                        success: function(response){
+                            socket.emit('add chat', response.name, response.image, response.room, response.list);
+                            location.href = response.url;
+                        },
+                        error: function(){
+                            $('.md_loading').modal('hide');
+                            $('.md_error').modal('show');
+                        }
+                    });
+                }else{
+                    if(!$('#cc_chat_name').val()){
+                        $('#cc_warn_name').removeClass('hiddened');
+                    }else if(!$('#cc_warn_name').hasClass( "hiddened" )){
+                        $('#cc_warn_name').addClass('hiddened');
+                    }
+
+                    if(!$('#cc_friend_list').val()){
+                        $('#cc_warn_list').removeClass('hiddened');
+                    }else if(!$('#cc_warn_list').hasClass( "hiddened" )){
+                        $('#cc_warn_list').addClass('hiddened');
+                    }
                 }
+            });
+
+            $('#cancel_createchat').click(function(e){
+                $('.md_createchat').modal('hide');
+                $('#cc_chat_name').val('');
+                $('#cc_friend_list').val('');
+                $("#cc_selection a").remove();
+                $('#select_friend div').removeClass().addClass('item select_option');
+                if(!$('#cc_warn_list').hasClass( "hiddened" )){
+                    $('#cc_warn_list').addClass('hiddened');
+                }
+                if(!$('#cc_warn_name').hasClass( "hiddened" )){
+                    $('#cc_warn_name').addClass('hiddened');
+                }
+            });
+
+            $('#lc_ok').click(function(e){
+                $('.md_leavegroup').modal('hide');
+                $('.md_loading').modal('show');
+                $.ajax({
+                    url: "<?php echo base_url('chat_manager/leave_chat') ?>",
+                    type: 'post',
+                    dataType : "json",
+                    data: { 
+                        room: '<?php echo $room ?>', 
+                        user_id: '<?php echo $id  ?>'
+                    },
+                    success: function(data){
+                        socket.emit('remove user', '<?php echo $room ?>', '<?php echo $id ?>', '<?php echo $nama ?>', '<?php echo $profilepict ?>');
+                    },
+                    error: function(error){
+                        console.log(error);
+                        $('.md_loading').modal('hide');
+                        $('.md_error').modal('show');
+                    }
+                });
+            });
+
+            $('#au_add').click(function(e){
+                if($('#au_list').val()) {
+                    $('.md_adduser').modal('hide');
+                    $('.md_loading').modal('setting', 'closable', false).modal('show');
+
+                    $.ajax({
+                        url: "<?php echo base_url('chat_manager/add_user') ?>",
+                        type: 'post',
+                        dataType : "json",
+                        data: { 
+                            room: $('#au_room').val(), 
+                            user_list: $('#au_list').val(),
+                        },
+                        success: function(response){
+                            au_cancel();
+                            socket.emit('add user', '<?php echo $room ?>', response, '<?php echo $room_info['nama_room'] ?>', '<?php echo $room_info['room_pict'] ?>');
+                            for(i = 0; i < response.length; i++){
+                                var id_removed = '#friend_' + response[i]['id'];
+                                var new_user = '<div class="item" id="user_' + response[i]['id'] +'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="<?php echo base_url('pro_pict/')?>' + response[i]['profile_pict'] + '"></a></div><div class="nine wide column"><a class="author">' + response[i]['nama'] + '</a><div class="text status" id="status_' + response[i]['id'] + '">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_' + response[i]['id'] + '"></div></div></div></div></div></div></div></div>';
+                                $('#list_user').append(new_user);
+                                $(id_removed).remove();
+                            }
+                            $('.md_loading').modal('hide');
+                        },
+                        error: function(response){
+                            console.log(response);
+                            $('.md_loading').modal('hide');
+                            $('.md_error').modal('show');
+                        }
+                    });
+                }else{
+                    if(!$('#au_warn_user').val()){
+                        $('#au_warn_user').removeClass('hiddened');
+                    }else if(!$('#au_warn_user').hasClass( "hiddened" )){
+                        $('#au_warn_user').addClass('hiddened');
+                    }
+                }
+            });
+
+            $('#au_cancel').click(function(e){
+                au_cancel();
             });
 
             $('.formsend').submit(function(e) {
                 e.preventDefault();
                 e.returnValue = false;
 
-                var dt = new Date();
-                var time = ('0' + dt.getDate()).slice(-2) + "/" + ('0' + (dt.getMonth()+1)).slice(-2) + "/" + dt.getFullYear() + "  " + ('0' + dt.getHours()).slice(-2) + ":" + ('0' + dt.getMinutes()).slice(-2);
-                var time_db = dt.getFullYear() + "-" + (dt.getMonth()+1) + "-" + dt.getDate() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-                var msg_val =  $('.chat_message').val();
-                socket.emit('chat message', msg_val, time);
-                $('.chat_message').val('');
-                
-                $.ajax({
-                    url: '<?php echo base_url('chat_manager/send_msg') ?>',
-                    type: 'post',
-                    dataType : "json",
-                    data: { 
+                if( <?php echo $room?> > -1){
+                    var dt = new Date();
+                    var time = ('0' + dt.getDate()).slice(-2) + "/" + ('0' + (dt.getMonth()+1)).slice(-2) + "/" + dt.getFullYear() + "  " + ('0' + dt.getHours()).slice(-2) + ":" + ('0' + dt.getMinutes()).slice(-2);
+                    var time_db = dt.getFullYear() + "-" + (dt.getMonth()+1) + "-" + dt.getDate() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+                    var msg_val =  $('.chat_message').val();
+                    var send_url = '<?php echo base_url('chat_manager/send_msg') ?>';
+                    socket.emit('chat message', msg_val, time);
+                    
+                    var data = { 
                         room: "<?php echo $room ?>", 
                         user_id: "<?php echo $id ?>",
                         time : time_db,
                         tipe : 1,
                         msg : msg_val
-                    },
-                    error: function(data){
-                    }
-                });
+                        };
 
+                    post_data(data, send_url);
+                }
+                $('.chat_message').val('');
+            });
+
+            socket.on('add chat', function(name, image, room) {
+                var new_chat = '<a class="item" style="padding-left: 0px; padding-right: 0px;" href="<?php echo base_url('chat/index?room=')?>' + room +'" id="room_' + room + '"><div class="ui cards"><div class="ui fluid card" style="margin: 0px;"><div class="content"><img class="right floated mini ui image" src="<?php echo base_url('pro_pict/')?>' + image + '"><div class="header">' + name + '</div><div class="meta" id="msg_time_' + room + '"></div><div class="description ui grid"><div class="ten wide column" id="msg_new_' + room + '" style="padding-top:7px; overflow:hidden; max-height: 20.33px; padding-bottom: 0px; margin-bottom:14px;"></div><div class="six wide column" style="padding-top: 0px;"><div class="right floated ui red label hiddened" id="notif_' + room + '"> 0 </div></div></div></div></div></div></a>';
+                $('#irp').prepend(new_chat);
+                socket.emit('join chat', room, '<?php echo $id ?>');
+            });
+
+            socket.on('add user', function(response) {
+                for(i = 0; i < response.length; i++){
+                    var id_removed = '#friend_' + response[i]['id'];
+                    var new_user = '<div class="item" id="user_' + response[i]['id'] +'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="<?php echo base_url('pro_pict/')?>' + response[i]['profile_pict'] + '"></a></div><div class="nine wide column"><a class="author">' + response[i]['nama'] + '</a><div class="text status" id="status_' + response[i]['id'] + '">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_' + response[i]['id'] + '"></div></div></div></div></div></div></div></div>';
+                    $('#list_user').append(new_user);
+                    $(id_removed).remove();
+                };
+            });
+
+            socket.on('remove user', function(id, nama, image){
+                var id_removed = '#user_' + id;
+                var new_available = '<div class="item select_option" data-value="' + id + '" data-text="' + nama + '" id="friend_' + id + '"><img class="ui mini avatar image" src="<?php echo base_url('pro_pict/') ?>' + image + '">' + nama + '</div>'
+                $('#au_select_friend').append(new_available);
+                $(id_removed).remove();
+            });
+
+            socket.on('removed', function(status){
+                window.location.href = "<?php echo base_url('/chat') ?>";
             });
 
             socket.on('chat message', function(id, who, msg, s_time, img) {
                 var time = " • " + s_time;
                 var img_url = '<?php echo base_url('pro_pict/') ?>' + img;
                 
-                if(id == '<?php echo $id ?>'){
-                    $('.main_chat').append('<div class="two column row"><div class="four wide column"></div><div class="twelve wide column"><div class="ui right floated comments"> <div class="comment"><a class="avatar c_avatar"></a><div class="content com_con"><a class="author c_author"></a><div class="metadata"></div><div class="text msg_data mod_send"></div></div></div></div></div></div>');
-                }else{
-                    $('.main_chat').append('<div class="two column row"><div class="twelve wide column"><div class="ui comments"> <div class="comment"><a class="avatar c_avatar"></a><div class="content com_con"><a class="author c_author"></a><div class="metadata"></div><div class="text msg_data mod_receive"></div></div></div></div></div></div>');
-                }
-                
-                var img = $('<img>', {"src": img_url});
-                $('.c_avatar').last().append(img);
-                $('.c_author').last().text(who);
-                var date = $('<div>', {"class": "date"}).text(time);
-                $('.metadata').last().append(date);
-                var description = $('<p>').text(msg);
-                $('.msg_data').last().append(description);
+                receivemessage(id, '<?php echo $id ?>', who, msg, time, img_url);
                 scrolltobottom();
             });
         });
@@ -166,19 +220,51 @@
 </head>
 <body>
     <div class="ui bottom attached segment pushable" style="margin-bottom: 0px">
+        <!-- Modal Error -->
+        <div class="ui basic modal md_error">
+            <div class="ui icon header">
+                <i class="frown icon"></i>Request Failed
+            </div>
+            <div class="content">
+                <div class="ui center aligned segment" style="background: transparent;">
+                    <p>Sorry! There is error occuring, your request cannot be proccesed this time.</p>
+                    <div class="actions">
+                        <div class="ui blue ok inverted button">
+                            <i class="checkmark icon"></i>Ok
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END of Error -->
+        <!-- Modal Loading -->
+        <div class="ui basic modal md_loading">
+            <div class="ui icon header">
+                <div class="ui segment" style="background: transparent;">
+                        <div class="ui large loader"></div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="ui  center aligned segment" style="background: transparent;">
+                    <p>Loading...</p>
+                    <p>Processing your request, please wait a moment. Do not refresh the page.</p>
+                </div>
+            </div>
+        </div>
+        <!-- END of Loading -->
         <!-- Modal Leave Group -->
         <div class="ui basic modal md_leavegroup">
             <div class="ui icon header">
                 <i class="remove user icon"></i>Leave Group Chat</div>
             <div class="content">
                 <p>Are you sure do you want to leave?</p>
-                <p>When you leave, all the chat from the group will be removed from your account.</p>
+                <p>When you leave, the chat history will be deleted from your account.</p>
             </div>
             <div class="actions">
                 <div class="ui red basic cancel inverted button">
                     <i class="remove icon"></i>No
                 </div>
-                <div class="ui blue ok inverted button">
+                <div class="ui blue inverted button" id="lc_ok">
                     <i class="checkmark icon"></i>Yes
                 </div>
             </div>
@@ -188,48 +274,47 @@
         <div class="ui modal md_createchat">
             <div class="header">Create New Chat</div>
             <div class="content">
-                <form class="ui form" action="<?php echo base_url('chat_manager/create_roomchat') ?>" method="POST">
+                <form class="ui form">
                     <h4 class="ui dividing header">Group Information</h4>
                     <div class="field">
-                        <input type="text" name="group_name" placeholder="Group Name" required/>
+                        <input type="text" id="cc_chat_name" name="group_name" placeholder="Group Name"/>
+                        <div class="ui pointing red basic label hiddened" id="cc_warn_name"><i class="warning icon"></i> Please enter the group name</div>
                     </div>
                     <h4 class="ui dividing header">User Participate</h4>
                     <div class="field">
                         <label>User:</label>
-                        <div class="ui fluid multiple search selection dropdown">
-                            <input type="number" name="user_id" value="<?php echo $id ?>" style="display:none;">
-                            <input type="hidden" name="friend_list">
+                        <div class="ui fluid multiple search selection dropdown" id="cc_selection">
+                            <input type="number" id="cc_user_id" name="user_id" value="<?php echo $id ?>" style="display:none;">
+                            <input type="hidden" id="cc_friend_list" name="friend_list">
                             <i class="dropdown icon"></i>
                             <div class="default text">Friend List</div>
                             <div class="menu" id="select_friend">
                                 <?php
                                     if($friend){
                                         foreach ($friend as $row) {
-                                            echo '<div class="item select_option" data-value="'.$row['id'].'" data-text="'.$row['nama'].'"><img class="ui mini avatar image" src="'.base_url('pro_pict/').$row['profilepict'].'">'.$row['nama'].'</div>';
+                                            echo '<div class="item select_option" data-value="'.$row['ID'].'" data-text="'.$row['Nama'].'"><img class="ui mini avatar image" src="'.base_url('pro_pict/').$row['ProfilePict'].'">'.$row['Nama'].'</div>';
                                         }
                                     }
                                 ?>
                             </div>
                         </div>
-                    </div>
-                    <div class="actions">
-                        <div class="ui red basic cancel button" tabindex="0">Cancel</div>
-                        <button type="submit" class="ui blue basic ok button" tabindex="0">Create</button>
+                        <div class="ui pointing red basic label hiddened" id="cc_warn_list"><i class="warning icon"></i> Please choose a user</div>
                     </div>
                 </form>
             </div>
-            <script>
-                
-            </script>
+            <div class="actions">
+                <button class="ui red basic button" id="cancel_createchat" tabindex="0" onclick="">Cancel</button>
+                <button class="ui blue basic button" id="ok_createchat" tabindex="0">Create</button>
+            </div>
         </div>
         <!-- END of Modal Add Group Chat -->
         <!-- Modal Add Friend -->
         <div class="ui modal md_addfriend">
             <div class="header">Add Friend</div>
-            <div class="scrolling content">
+            <div class="content">
                 <div class="ui category search">
-                  <div class="ui icon input">
-                    <input class="prompt" type="text" placeholder="Search animals...">
+                  <div class="ui icon input" style="width: 100%">
+                    <input class="prompt" type="text" placeholder="Choose user">
                     <i class="search icon"></i>
                   </div>
                   <div class="results"></div>
@@ -237,17 +322,55 @@
             </div>
             <div class="actions">
                 <div class="ui red basic button cancel" tabindex="0">Cancel</div>
-                <div class="ui blue ok button right floated" tabindex="0">Add</div>
+                <div class="ui blue basic ok button" tabindex="0">Add</div>
             </div>
         </div>
         <!-- END of Modal Add Friend -->
+        <!-- Modal Add User -->
+        <div class="ui modal md_adduser">
+            <div class="header">Add User to Chat</div>
+            <div class="content">
+                <form class="ui form">
+                    <h4 class="ui dividing header">User Participate</h4>
+                    <div class="field">
+                        <input type="hidden" name="room" id="au_room" value="<?php echo $room ?>">
+                        <label>User:</label>
+                        <div class="ui fluid multiple search selection dropdown" id="au_selection">
+                            <input type="hidden" name="friend_list" id="au_list">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Friend List</div>
+                            <div class="menu" id="au_select_friend">
+                                <?php
+                                    if($friend){
+                                        foreach ($friend as $row) {
+                                            if(!in_array($row['ID'], $list_user)){
+                                                echo '<div class="item select_option" data-value="'.$row['ID'].'" data-text="'.$row['Nama'].'" id="friend_'.$row['ID'].'"><img class="ui mini avatar image" src="'.base_url('pro_pict/').$row['ProfilePict'].'">'.$row['Nama'].'</div>';
+                                            }
+                                        }
+                                    }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="ui pointing red basic label hiddened" id="au_warn_user"><i class="warning icon"></i> Please choose a user</div>
+            </div>
+            <div class="actions">
+                <button class="ui red basic button" id="au_cancel" tabindex="0">Cancel</button>
+                <button type="submit" class="ui blue basic button" id="au_add" tabindex="0">Add</button>
+            </div>
+            <script>
+                
+            </script>
+        </div>
+        <!-- END Modal Add User -->
         <div class="ui inverted left vertical sidebar menu" id="sd_chatlist">
             <!-- Move content here -->
         </div>
         <div class="ui inverted right vertical sidebar menu" id="sd_groupuser">
         </div>
         <div class="ui wide inverted left vertical sidebar menu visible" id="bg_chatlist" style="
-        overflow-x: hidden;">
+        overflow: hidden !important;">
             <div id="item_container">
                 <div class="item">
                     <div class="ui two column grid">
@@ -271,34 +394,34 @@
                             <i class="comments outline icon"></i>
                         </div>
                     </div>
-                    <div class="ui animated fade button right floated" tabindex="0" onclick="$('.md_addfriend').modal('show');">
+                    <!-- <div class="ui animated fade button right floated" tabindex="0" onclick="$('.md_addfriend').modal('show');">
                         <div class="visible content">Add Friend</div>
                         <div class="hidden content">
                             <i class="add user icon"></i>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="item">
                     <div class="ui search">
                         <div class="ui icon input" style="width: 100%;">
-                            <input class="prompt" type="text" placeholder="Search Chat">
+                            <input class="prompt" onkeyup="search_chat()" type="text" placeholder="Search Chat">
                             <i class="search icon"></i>
                         </div>
                         <div class="results"></div>
                     </div>
                 </div>
-                <div id="irp">
+                <div id="irp" style="overflow-x: hidden; overflow-y: auto; height: calc(100vh - 186px);">
                 <?php
 
                     if($allroom_info != NULL){
                         
-                        foreach ($allroom_info as $room) {
-                            if($room['time']){
-                                $timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $room['time']);
+                        foreach ($allroom_info as $row) {
+                            if($row['time']){
+                                $timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $row['time']);
                                 $formated_timestamp = $timestamp->format('d/m/Y H:i');
                             }
 
-                            echo '<a class="item" style="padding-left: 0px; padding-right: 0px;" href="'.base_url('chat/index?room=').$room['id_room'].'" id="room_'.$room['id_room'].'"><div class="ui cards"><div class="ui fluid card" style="margin: 0px;"><div class="content"><img class="right floated mini ui image" src="'.base_url('pro_pict/').$room['room_pict'].'"><div class="header">'.$room['nama_room'].'</div><div class="meta" id="msg_time_'.$room['id_room'].'">'.($room['time'] ? $formated_timestamp : '').'</div><div class="description ui grid"><div class="ten wide column" id="msg_new_'.$room['id_room'].'" style="padding-top:7px; overflow:hidden; max-height: 20.33px; padding-bottom: 0px; margin-bottom:14px;">'.($room['chat_msg'] ? $room['chat_msg'] : '').'</div><div class="six wide column" style="padding-top: 0px;"><div class="right floated ui red label '.($room['unread_count'] > 0 ? '' : 'hidden').'" id="notif_'.$room['id_room'].'"> '.(int)$room['unread_count'].' </div></div></div></div></div></div></a>';
+                            echo '<a class="item" style="padding-left: 0px; padding-right: 0px;" href="'.base_url('chat/index?room=').$row['id_room'].'" id="room_'.$row['id_room'].'"><div class="ui cards"><div class="ui fluid card" style="margin: 0px;"><div class="content '.($row['id_room'] == $room ? 'activated' : '').'"><img class="right floated mini ui image" src="'.base_url('pro_pict/').$row['room_pict'].'"><div class="header">'.$row['nama_room'].'</div><div class="meta" id="msg_time_'.$row['id_room'].'">'.($row['time'] ? $formated_timestamp : '').'</div><div class="description ui grid"><div class="ten wide column" id="msg_new_'.$row['id_room'].'" style="padding-top:7px; overflow:hidden; max-height: 20.33px; padding-bottom: 0px; margin-bottom:14px;">'.($row['chat_msg'] ? $row['chat_msg'] : '').'</div><div class="six wide column" style="padding-top: 0px;"><div class="right floated ui red label '.($row['unread_count'] > 0 ? '' : 'hiddened').'" id="notif_'.$row['id_room'].'"> '.(int)$row['unread_count'].' </div></div></div></div></div></div></a>';
                         }
                     }
                 ?>
@@ -361,8 +484,9 @@
             </div>
         </div>
         <div class="ui wide inverted right vertical sidebar menu visible" id="bg_groupuser" style="width:20vw;">
+            <?php if($room_info){ ?>
             <div class="item">
-                <div class="ui animated fade button" tabindex="0"  onclick="$('.md_createchat').modal('show');">
+                <div class="ui animated fade button" tabindex="0"  onclick="$('.md_adduser').modal('show');">
                     <div class="visible content">Add User</div>
                     <div class="hidden content">
                         <i class="add user icon"></i>
@@ -375,12 +499,13 @@
                     </div>
                 </div>
             </div>
+            <?php }; ?>
             <div class="item"><div class="center big_bold">User in group: </div></div>
             <div class="column" id="list_user">
             <?php
                 if($user_participate){
                     foreach ($user_participate as $row) {
-                        echo '<div class="item" id="user_'.$row['ID'].'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="'.base_url('pro_pict/').$row['ProfilePict'].'"></a></div><div class="nine wide column"><a class="author">'.$row['Nama'].'</a><div class="text status" id="status_'.$row['ID'].($row['ID'] == $id? '">Online' : '">Offline').'</div></div><div class="three wide column"><div class="led-box">'.( $row['ID'] == $id? '<div class="led-blue" id="ledlamp_'.$row['ID'].'">' : '<div class="led-red" id="ledlamp_'.$row['ID'].'">').'</div></div></div></div></div></div></div></div>';
+                        echo '<div class="item" id="user_'.$row['ID'].'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="'.base_url('pro_pict/').$row['ProfilePict'].'"></a></div><div class="nine wide column"><a class="author">'.$row['Nama'].'</a><div class="text status" id="status_'.$row['ID'].'">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_'.$row['ID'].'"></div></div></div></div></div></div></div></div>';
                     }
                 }
             ?>
@@ -401,9 +526,8 @@
         .sidebar('attach events', '.menu .groupuser');
 
         $('.dropdown').dropdown({});
-
-        join();
-        scroll();
+        join('<?php echo $nama ?>', '<?php echo $id ?>', '<?php echo $profilepict ?>', '<?php echo $room ?>', <?php $temp = []; foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }; echo json_encode($temp);?>);
+        scroll(<?php echo $unread ?>, <?php echo count($list_chat); ?>);
     </script>
 </body>
 </html>

@@ -4,10 +4,9 @@ body{
 }
 
 .main{
-	margin-top: 11vh;
 	overflow: hidden;
 	overflow-y: auto;
-	height: 80vh;
+	height: 84vh;
 	margin-bottom: 1vh; 
 }
 
@@ -38,4 +37,55 @@ body{
 .mod_send{
 	background-color: rgba(180, 30, 30, 0.4); 
 	padding: 2vmin;
+}
+
+#bg_topmenu{
+	height: 8vh;
+}
+
+.big_bold{
+	font-size: 2vmin !important;
+}
+
+.white{
+	background-color: rgba(255, 255, 255, 1) !important; 
+	padding: 2vmin;
+}
+
+.led-box {
+  height: 30px;
+  width: 25%;
+  margin: 10px 0;
+  float: left;
+}
+
+.led-blue {
+  margin: 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: #24E0FF;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #006 0 -1px 9px, #3F8CFF 0 2px 14px;
+}
+
+.led-red {
+  margin: 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: #F00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
+/*  -webkit-animation: blinkRed 0.5s infinite;
+  -moz-animation: blinkRed 0.5s infinite;
+  -ms-animation: blinkRed 0.5s infinite;
+  -o-animation: blinkRed 0.5s infinite;
+  animation: blinkRed 0.5s infinite;*/
+}
+
+.hiddened{
+	display: none !important;
+}
+
+.activated{
+	background-color: rgba(1, 47, 106, 0.4) !important; 
 }

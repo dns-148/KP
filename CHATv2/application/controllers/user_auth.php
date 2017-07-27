@@ -29,7 +29,7 @@ class user_auth extends CI_Controller {
 					'id' => $row->ID,
 					'nama' => $row->Nama,
 					'profilepict' => $row->ProfilePict,
-					'room' => -1
+					// 'room' => -1
 				);
 		    	$this->session->set_userdata('logged_in', $sess_array);
 	    	}

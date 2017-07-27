@@ -15,7 +15,6 @@
     
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>asset/css/chat.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>asset/css/login.css">
