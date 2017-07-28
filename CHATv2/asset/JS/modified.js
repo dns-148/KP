@@ -80,7 +80,7 @@ function newmessage(msg, time, room, room_id, basic_url, user_id){
 		var temp_item = "#notif_" + room_id;
 		var unread = parseInt($(temp_item).text()) + 1;
 		$(temp_item).text(unread);
-		$(temp_item).removeClass('hidden');
+		$(temp_item).removeClass('hiddened');
 
 		var data = { 
 			room: room_id, 
