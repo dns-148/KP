@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="<?php echo base_url('asset/css/modified.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Latest compiled JavaScript -->
-    <script src="http://192.168.0.107:3000/socket.io/socket.io.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.js"></script>
@@ -22,10 +22,13 @@
     <script>
         var socket;
         function join(nama, id, img, room, room_list){
-            socket = io('http://192.168.0.107:3000');
+            socket = io('http://localhost:3000');
             socket.emit("join", id, nama, room, room_list, img);
         };
-
+    </script>
+</head>
+<body>
+    <script>
         $(function() { 
             socket.on('user logout', function(logout_id, remaining_id){
                 logoutuser(logout_id, remaining_id);
@@ -79,17 +82,7 @@
             });
 
             $('#cancel_createchat').click(function(e){
-                $('.md_createchat').modal('hide');
-                $('#cc_chat_name').val('');
-                $('#cc_friend_list').val('');
-                $("#cc_selection a").remove();
-                $('#select_friend div').removeClass().addClass('item select_option');
-                if(!$('#cc_warn_list').hasClass( "hiddened" )){
-                    $('#cc_warn_list').addClass('hiddened');
-                }
-                if(!$('#cc_warn_name').hasClass( "hiddened" )){
-                    $('#cc_warn_name').addClass('hiddened');
-                }
+                cc_cancel();
             });
 
             $('#lc_ok').click(function(e){
@@ -130,12 +123,7 @@
                         success: function(response){
                             au_cancel();
                             socket.emit('add user', '<?php echo $room ?>', response, '<?php echo $room_info['nama_room'] ?>', '<?php echo $room_info['room_pict'] ?>');
-                            for(i = 0; i < response.length; i++){
-                                var id_removed = '#friend_' + response[i]['id'];
-                                var new_user = '<div class="item" id="user_' + response[i]['id'] +'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="<?php echo base_url('pro_pict/')?>' + response[i]['profile_pict'] + '"></a></div><div class="nine wide column"><a class="author">' + response[i]['nama'] + '</a><div class="text status" id="status_' + response[i]['id'] + '">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_' + response[i]['id'] + '"></div></div></div></div></div></div></div></div>';
-                                $('#list_user').append(new_user);
-                                $(id_removed).remove();
-                            }
+                            au_add(response, '<?php echo base_url('pro_pict/')?>');
                             $('.md_loading').modal('hide');
                         },
                         error: function(response){
@@ -189,12 +177,7 @@
             });
 
             socket.on('add user', function(response) {
-                for(i = 0; i < response.length; i++){
-                    var id_removed = '#friend_' + response[i]['id'];
-                    var new_user = '<div class="item" id="user_' + response[i]['id'] +'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="<?php echo base_url('pro_pict/')?>' + response[i]['profile_pict'] + '"></a></div><div class="nine wide column"><a class="author">' + response[i]['nama'] + '</a><div class="text status" id="status_' + response[i]['id'] + '">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_' + response[i]['id'] + '"></div></div></div></div></div></div></div></div>';
-                    $('#list_user').append(new_user);
-                    $(id_removed).remove();
-                };
+                au_add(response, '<?php echo base_url('pro_pict/')?>');
             });
 
             socket.on('remove user', function(id, nama, image){
@@ -217,9 +200,7 @@
             });
         });
     </script>
-</head>
-<body>
-    <div class="ui bottom attached segment pushable" style="margin-bottom: 0px">
+    <div class="ui bottom attached segment pushable" style="margin: 0px;height: 100vh;width: 100vw;overflow: hidden;border: none;"">
         <!-- Modal Error -->
         <div class="ui basic modal md_error">
             <div class="ui icon header">
@@ -309,7 +290,7 @@
         </div>
         <!-- END of Modal Add Group Chat -->
         <!-- Modal Add Friend -->
-        <div class="ui modal md_addfriend">
+       <!--  <div class="ui modal md_addfriend">
             <div class="header">Add Friend</div>
             <div class="content">
                 <div class="ui category search">
@@ -324,7 +305,7 @@
                 <div class="ui red basic button cancel" tabindex="0">Cancel</div>
                 <div class="ui blue basic ok button" tabindex="0">Add</div>
             </div>
-        </div>
+        </div> -->
         <!-- END of Modal Add Friend -->
         <!-- Modal Add User -->
         <div class="ui modal md_adduser">
@@ -364,7 +345,8 @@
             </script>
         </div>
         <!-- END Modal Add User -->
-        <div class="ui inverted left vertical sidebar menu" id="sd_chatlist">
+        <div class="ui inverted left vertical sidebar menu" id="sd_chatlist" style="
+        overflow: hidden !important;">
             <!-- Move content here -->
         </div>
         <div class="ui inverted right vertical sidebar menu" id="sd_groupuser">
@@ -373,19 +355,8 @@
         overflow: hidden !important;">
             <div id="item_container">
                 <div class="item">
-                    <div class="ui two column grid">
-                        <div class="column"><a>
-                            <img class="ui avatar image" src="<?php echo base_url('pro_pict/').$profilepict; ?>">
-                        </a></div>
-                        <div class="column">
-                            <a class="ui right floated animated fade button createchat" tabindex="0" href="<?php echo base_url('login/logout'); ?>">
-                                <div class="visible content">Log-out</div>
-                                <div class="hidden content">
-                                    <i class="sign out icon"></i>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+                    <img class="ui avatar image" src="<?php echo base_url('pro_pict/').$profilepict; ?>">
+                    <a>&nbsp;&nbsp;&nbsp;<?php echo $nama ?></a>
                 </div>
                 <div class="item">
                     <div class="ui animated fade button" tabindex="0"  onclick="$('.md_createchat').modal('show');">
@@ -394,6 +365,12 @@
                             <i class="comments outline icon"></i>
                         </div>
                     </div>
+                    <a class="ui right floated animated fade button createchat" tabindex="0" href="<?php echo base_url('login/logout'); ?>">
+                        <div class="visible content">Log-out</div>
+                        <div class="hidden content">
+                            <i class="sign out icon"></i>
+                        </div>
+                    </a>
                     <!-- <div class="ui animated fade button right floated" tabindex="0" onclick="$('.md_addfriend').modal('show');">
                         <div class="visible content">Add Friend</div>
                         <div class="hidden content">
@@ -429,86 +406,94 @@
             </div>
         </div>
         <div class="pusher" id="main_body">
-            <div class="ui top attached menu" id="bg_topmenu">
-                <?php 
-                    if($room_info){
-                        echo '<a class="brand item"><img class="ui avatar image" src="'.base_url('pro_pict/').$room_info['room_pict'].'"> &nbsp;&nbsp;&nbsp;'.$room_info['nama_room'].'</a><div class="right menu"><a class="item" onclick=""><i class="record icon"></i> Video Call</a><a class="item" onclick=""><i class="attach icon"></i> Send File</a></div>';
-                    }; 
-                ?>
-            </div>
-            <div class="ui top thin fixed labeled icon menu sidebar" id="sm_topmenu">
-                <a class="item chatlist">
-                    <i class="comments icon"></i>
-                </a>
-                <div class="right menu">
-                    <a class="item groupuser">
-                        <i class="users icon"></i>
-                    </a>
-                    <a class="item leavegroup" onclick="$('.md_leavegroup').modal('show');">
-                        <i class="remove user icon"></i>
-                    </a>
+            <div id="main_container">
+                <div class="ui top attached menu" id="bg_topmenu">
+                    <?php 
+                        if($room_info){
+                            echo '<a class="brand item"><img class="ui avatar image" src="'.base_url('pro_pict/').$room_info['room_pict'].'"> &nbsp;&nbsp;&nbsp;'.$room_info['nama_room'].'</a><div class="right menu"><a class="item" onclick=""><i class="record icon"></i> Video Call</a><a class="item" onclick=""><i class="attach icon"></i> Send File</a></div>';
+                        }; 
+                    ?>
                 </div>
-            </div>
-            <div class="main">
-                <div class="ui basic segment">
-                    <div class="ui grid main_chat">
-                        <?php
-                            if($list_chat){
-                                foreach ($list_chat as $row) {
-                                    $timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $row['time']);
-                                    $formated_timestamp =  $timestamp->format('d/m/Y H:i');
-                                    if($id == $row['ID']){
-                                        echo '<div class="two column row" id="chat_'.$row["idChat"].'"><div class="four wide column"></div><div class="twelve wide column"><div class="ui comments"><div class="comment"><a class="avatar c_avatar"><img src="'.base_url('pro_pict/').$row["ProfilePict"].'"></a><div class="content com_con"><a class="author">'.$row["Nama"].'</a><div class="metadata"><div class="date"> • '.$formated_timestamp.'</div></div><div class="text msg_data mod_send">'.$row["chatMsg"].'</div></div></div></div></div></div>';
-                                    }else{
-                                        echo '<div class="two column row" id="chat_'.$row["idChat"].'"><div class="twelve wide column"><div class="ui comments"><div class="comment"><a class="avatar c_avatar"><img src="'.base_url('pro_pict/').$row["ProfilePict"].'"></a><div class="content com_con"><a class="author">'.$row["Nama"].'</a><div class="metadata"><div class="date"> • '.$formated_timestamp.'</div></div><div class="text msg_data mod_receive">'.$row["chatMsg"].'</div></div></div></div></div></div>';
+                <div class="ui top attached mini menu hiddened" id="sm_topmenu" style="border-radius: 0px">
+                    <?php 
+                        if($room_info){
+                            echo '<a class="brand item"><img class="ui avatar image" src="'.base_url('pro_pict/').$room_info['room_pict'].'"> &nbsp;&nbsp;&nbsp;'.$room_info['nama_room'].'</a>';
+                        }; 
+                    ?>
+                    <div class="right menu">
+                        <div class="ui dropdown icon item">
+                            <i class="wrench icon"></i>
+                            <div class="menu">
+                                <div class="item" id="sd_clbutton">List Chat</div>
+                                <div class="item" id="sd_gubutton">List User</div>
+                                <div class="item">Send File</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="main" style="height: 84vh;">
+                    <div class="ui basic segment">
+                        <div class="ui grid main_chat">
+                            <?php
+                                if($list_chat){
+                                    foreach ($list_chat as $row) {
+                                        $timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $row['time']);
+                                        $formated_timestamp =  $timestamp->format('d/m/Y H:i');
+                                        if($id == $row['ID']){
+                                            echo '<div class="two column row" id="chat_'.$row["idChat"].'"><div class="four wide column"></div><div class="twelve wide column"><div class="ui comments"><div class="comment"><a class="avatar c_avatar"><img src="'.base_url('pro_pict/').$row["ProfilePict"].'"></a><div class="content com_con"><a class="author">'.$row["Nama"].'</a><div class="metadata"><div class="date"> • '.$formated_timestamp.'</div></div><div class="text msg_data mod_send">'.$row["chatMsg"].'</div></div></div></div></div></div>';
+                                        }else{
+                                            echo '<div class="two column row" id="chat_'.$row["idChat"].'"><div class="twelve wide column"><div class="ui comments"><div class="comment"><a class="avatar c_avatar"><img src="'.base_url('pro_pict/').$row["ProfilePict"].'"></a><div class="content com_con"><a class="author">'.$row["Nama"].'</a><div class="metadata"><div class="date"> • '.$formated_timestamp.'</div></div><div class="text msg_data mod_receive">'.$row["chatMsg"].'</div></div></div></div></div></div>';
+                                        }
                                     }
                                 }
+                            ?>
+                        </div>                
+                    </div>
+                </div>
+                <div class="footer" id="footer">
+                    <form action="" class="formsend">
+                    <div class="ui grid">
+                        <div class="fourteen wide column" id="msg_area">
+                            <textarea class="chat_message"></textarea>
+                        </div>
+                        <div class="two wide column" id="btn_send" style="padding-left: 0px;">
+                            <button type="submit" class="ui compact icon button" style="height: 5vh; width: 5vh; padding: 1vh;" data-tooltip="Send message" data-inverted="">
+                              <i class="send icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="ui wide inverted right vertical sidebar menu visible" id="bg_groupuser" style="width: 20vw; overflow: hidden;">
+                <div id="user_container">
+                    <?php if($room_info){ ?>
+                    <div class="item">
+                        <div class="ui animated fade button" tabindex="0"  onclick="$('.md_adduser').modal('show');">
+                            <div class="visible content">Add User</div>
+                            <div class="hidden content">
+                                <i class="add user icon"></i>
+                            </div>
+                        </div>
+                        <div class="ui animated fade button right floated" tabindex="0" onclick="$('.md_leavegroup').modal('show');">
+                            <div class="visible content">Leave Chat</div>
+                            <div class="hidden content">
+                                <i class="remove user icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <?php }; ?>
+                    <div class="item"><div class="center big_bold">User in group: </div></div>
+                    <div class="column" id="list_user" style="height: calc(100vh - 102px); overflow: hidden;overflow-y: auto;">
+                    <?php
+                        if($user_participate){
+                            foreach ($user_participate as $row) {
+                                echo '<div class="item" id="user_'.$row['ID'].'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="'.base_url('pro_pict/').$row['ProfilePict'].'"></a></div><div class="nine wide column"><a class="author">'.$row['Nama'].'</a><div class="text status" id="status_'.$row['ID'].'">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_'.$row['ID'].'"></div></div></div></div></div></div></div></div>';
                             }
-                        ?>
-                    </div>                
-                </div>
-            </div>
-            <div class="footer" id="footer">
-                <form action="" class="formsend">
-                <div class="ui grid">
-                    <div class="fourteen wide column" id="msg_area">
-                        <textarea class="chat_message"></textarea>
-                    </div>
-                    <div class="two wide column" id="btn_send" style="padding-left: 0px;">
-                        <button type="submit" class="ui compact icon button" style="height: 5vh; width: 5vh; padding: 1vh;" data-tooltip="Send message" data-inverted="">
-                          <i class="send icon"></i>
-                        </button>
+                        }
+                    ?>
                     </div>
                 </div>
-                </form>
-            </div>
-        </div>
-        <div class="ui wide inverted right vertical sidebar menu visible" id="bg_groupuser" style="width:20vw;">
-            <?php if($room_info){ ?>
-            <div class="item">
-                <div class="ui animated fade button" tabindex="0"  onclick="$('.md_adduser').modal('show');">
-                    <div class="visible content">Add User</div>
-                    <div class="hidden content">
-                        <i class="add user icon"></i>
-                    </div>
-                </div>
-                <div class="ui animated fade button right floated" tabindex="0" onclick="$('.md_leavegroup').modal('show');">
-                    <div class="visible content">Leave Chat</div>
-                    <div class="hidden content">
-                        <i class="remove user icon"></i>
-                    </div>
-                </div>
-            </div>
-            <?php }; ?>
-            <div class="item"><div class="center big_bold">User in group: </div></div>
-            <div class="column" id="list_user">
-            <?php
-                if($user_participate){
-                    foreach ($user_participate as $row) {
-                        echo '<div class="item" id="user_'.$row['ID'].'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="'.base_url('pro_pict/').$row['ProfilePict'].'"></a></div><div class="nine wide column"><a class="author">'.$row['Nama'].'</a><div class="text status" id="status_'.$row['ID'].'">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_'.$row['ID'].'"></div></div></div></div></div></div></div></div>';
-                    }
-                }
-            ?>
             </div>
         </div>
     </div>
@@ -517,13 +502,13 @@
         .sidebar({
             context: $('.bottom.segment')
         })
-        .sidebar('attach events', '.menu .chatlist');
+        .sidebar('attach events', '#sd_clbutton');
 
          $('#sd_groupuser')
         .sidebar({
             context: $('.bottom.segment')
         })
-        .sidebar('attach events', '.menu .groupuser');
+        .sidebar('attach events', '#sd_gubutton');
 
         $('.dropdown').dropdown({});
         join('<?php echo $nama ?>', '<?php echo $id ?>', '<?php echo $profilepict ?>', '<?php echo $room ?>', <?php $temp = []; foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }; echo json_encode($temp);?>);

@@ -1,3 +1,26 @@
+function cc_cancel(){
+	$('.md_createchat').modal('hide');
+	$('#cc_chat_name').val('');
+	$('#cc_friend_list').val('');
+	$("#cc_selection a").remove();
+	$('#select_friend div').removeClass().addClass('item select_option');
+	if(!$('#cc_warn_list').hasClass( "hiddened" )){
+		$('#cc_warn_list').addClass('hiddened');
+	}
+	if(!$('#cc_warn_name').hasClass( "hiddened" )){
+		$('#cc_warn_name').addClass('hiddened');
+	}
+}
+
+function au_add(response, server_url){
+	for(i = 0; i < response.length; i++){
+		var id_removed = '#friend_' + response[i]['id'];
+		var new_user = '<div class="item" id="user_' + response[i]['id'] +'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="' + server_url + response[i]['profile_pict'] + '"></a></div><div class="nine wide column"><a class="author">' + response[i]['nama'] + '</a><div class="text status" id="status_' + response[i]['id'] + '">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_' + response[i]['id'] + '"></div></div></div></div></div></div></div></div>';
+		$('#list_user').append(new_user);
+		$(id_removed).remove();
+	}
+}
+
 function au_cancel(){
 	$('.md_adduser').modal('hide');
 	$('#au_room').val('');
@@ -109,39 +132,62 @@ $("#menu-toggle").click(function(e) {
 function check_size(){
 	var is_iPad = navigator.userAgent.match(/iPad/i) != null;
 	if (window.matchMedia('(min-width: 1024px)').matches && !is_iPad) {
+		$('.big_bold').css('font-size','2vw !important;');
+		$('#item_container').prependTo('#bg_chatlist');
+		$('#user_container').prependTo('#bg_groupuser');
 		$('#bg_chatlist').addClass('visible');
 		$('#bg_groupuser').addClass('visible');
+		$('#bg_topmenu').removeClass('hiddened');
+		$('#sm_topmenu').addClass('hiddened');
+		$('#main_body').css('width','calc(100vw - 350px)');
 		if($(window).width() > 1250){
-			$('#main_body').css('width','calc(80vw - 350px)');
+			$('#main_container').css('width','calc(80vw - 350px)');
 			$('#bg_groupuser').css('width','20vw');
 		}else{
-			$('#main_body').css('width','calc(100vw - 601px)');
+			$('#main_container').css('width','calc(100vw - 601px)');
 			$('#bg_groupuser').css('width','251px');
 		}
+		$('.main').css('height','84vh');
 		$('#footer').css('width', 'calc(100% - 2em)');
 		$('#msg_area').removeClass('fourteen wide column');
 		$('#msg_area').addClass('fifteen wide column');
 		$('#btn_send').removeClass('two wide column');
 		$('#btn_send').addClass('one wide column');
 	} else if(window.matchMedia('(min-width: 768px)').matches) {
+		$('.big_bold').css('font-size','5vw !important;');
+		$('#item_container').prependTo('#sd_chatlist');
+		$('#user_container').prependTo('#bg_groupuser');
+		$('#sd_gubutton').addClass('hiddened');
 		$('#bg_chatlist').removeClass('visible');
 		$('#bg_groupuser').addClass('visible');
+		$('#sm_topmenu').removeClass('hiddened');
+		$('#bg_topmenu').addClass('hiddened');
+		$('#main_body').css('width','100vw');
 		if($(window).width() > 833){
+			$('#main_container').css('width','70vw');
 			$('#bg_groupuser').css('width','30vw');
-			$('#main_body').css('width','70vw');
 		}else{
-			$('#main_body').css('width','calc(100vw - 251px)');
+			$('#main_container').css('width','calc(100vw - 251px)');
 			$('#bg_groupuser').css('width','251px');
 		}
+		$('.main').css('height','87vh');
 		$('#footer').css('width', '100%');
 		$('#msg_area').removeClass('fifteen wide column');
 		$('#msg_area').addClass('fourteen wide column');
 		$('#btn_send').removeClass('one wide column');
 		$('#btn_send').addClass('two wide column');
 	}else{
+		$('.big_bold').css('font-size','5vw !important;');
+		$('#item_container').prependTo('#sd_chatlist');
+		$('#user_container').prependTo('#sd_groupuser');
+		$('#sd_gubutton').removeClass('hiddened');
 		$('#bg_chatlist').removeClass('visible');
 		$('#bg_groupuser').removeClass('visible');
+		$('#sm_topmenu').removeClass('hiddened');
+		$('#bg_topmenu').addClass('hiddened');
 		$('#main_body').css('width','100vw');
+		$('#main_container').css('width','100vw');
+		$('.main').css('height','85vh');
 		$('#footer').css('width', '100%');
 		$('#msg_area').removeClass('fifteen wide column');
 		$('#msg_area').addClass('fourteen wide column');

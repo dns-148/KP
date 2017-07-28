@@ -6,7 +6,7 @@ var rooms = {};
 var id_to_socket ={};
 
 app.get('/', function(req, res){
-	res.redirect('http://192.168.0.107/CHATv2/');
+	res.redirect('http://localhost/CHATv2/');
 });
 
 io.on('connection', function(socket){

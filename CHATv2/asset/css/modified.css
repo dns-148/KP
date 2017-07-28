@@ -1,12 +1,11 @@
 body{
-	width: 100%;
-	overflow: hidden;
+	width: 100vw !important;
+	overflow: hidden !important;
 }
 
 .main{
 	overflow: hidden;
 	overflow-y: auto;
-	height: 84vh;
 	margin-bottom: 1vh; 
 }
 
@@ -43,13 +42,18 @@ body{
 	height: 8vh;
 }
 
-.big_bold{
-	font-size: 2vmin !important;
+#sm_topmenu{
+	margin: 0vh;
 }
 
 .white{
 	background-color: rgba(255, 255, 255, 1) !important; 
 	padding: 2vmin;
+}
+
+.msg_data{
+	white-space: pre-wrap !important;
+	word-wrap: break-word !important;
 }
 
 .led-box {
