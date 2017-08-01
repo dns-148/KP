@@ -81,16 +81,21 @@ function newmessage(msg, time, room, room_id, basic_url, tipe){
 		$(temp_item).text("[system] Image send by user");
 	}else if(parseInt(tipe) == 3){
 		$(temp_item).text("[system] File send by user");
+	}else if(parseInt(tipe) == 4){
+		$(temp_item).text("[system] Audio send by user");
+	}else if(parseInt(tipe) == 5){
+		$(temp_item).text("[system] Video send by user");
 	}else{
 		$(temp_item).text(msg);
 	}
+
 	var temp_item = "#msg_time_" + room_id;
 	$(temp_item).text(time);
 	if(parseInt(room_id) != parseInt(room)){
 		var temp_item = "#notif_" + room_id;
 		var unread = parseInt($(temp_item).text()) + 1;
 		$(temp_item).text(unread);
-		$(temp_item).removeClass('hidden');
+		$(temp_item).removeClass('hiddened');
 
 		var data = { 
 			room: room_id, 
@@ -115,7 +120,15 @@ function receivemessage(sender_id, id, who, msg, time, img_url, tipe){
 	if(parseInt(tipe) == 2){
 		description = $('<img>').attr("src", msg).addClass('msg_image');
 	}else if(parseInt(tipe) == 3){
-		description = '<a href="' + msg +'" download><div class="ui center aligned segment"><i class="download icon" style="font-size: 6em;"></i></div></a>';
+		index_start = msg.lastIndexOf("/") + 1;
+		index_end = msg.length;
+		description = '<p>' + msg.slice(index_start, index_end)  + ' :</p><a href="' + msg +'" download><div class="ui center aligned segment"><i class="download icon" style="font-size: 6em !important;"></i></div></a>';
+	}else if(parseInt(tipe) == 4){
+		index_start = msg.lastIndexOf("/") + 1;
+		index_end = msg.length;
+		description = '<p>' + msg.slice(index_start, index_end)  + ' :</p><audio controls class="msg_audio"><source src="' + msg +'" type="audio/mpeg"></audio>';
+	}else if(parseInt(tipe) == 5){
+		description = '<video controls class="msg_video"><source src="'+ msg +'" type="video/mp4"></video>';
 	}else{
 		description = $('<p>').text(msg);
 	}

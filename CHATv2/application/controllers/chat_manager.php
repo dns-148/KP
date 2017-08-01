@@ -78,14 +78,14 @@ class chat_manager extends CI_Controller {
 
 	public function upload_file(){
 		$config['upload_path']		= './file_upload/';
-		$config['allowed_types']	= 'gif|jpg|png|rar|zip|doc|docx|ppt|pptx|xls|xlsx|pdf|txt';
+		$config['allowed_types']	= 'gif|jpg|png|rar|zip|doc|docx|ppt|pptx|xls|xlsx|pdf|txt|mp3|mp4';
 		$config['max_size']			= 10000;
 
 		$this->load->library('upload', $config);
 
 		if (!$this->upload->do_upload('file')){
 			 $error = array('error' => $this->upload->display_errors());
-			 echo print_r($error);
+			 echo json_encode(NULL);
 		}else{
 			$upload_data = $this->upload->data();
 			$file_name = $upload_data['file_name'];
@@ -94,6 +94,10 @@ class chat_manager extends CI_Controller {
 
 			if(strpos($ext_file, "image") !== false){
 				$tipe = 2;
+			}else if(strpos($ext_file, "audio") !== false){
+				$tipe = 4;
+			}else if(strpos($ext_file, "video") !== false){
+				$tipe = 5;
 			}else{
 				$tipe = 3;
 			}

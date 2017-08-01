@@ -86,6 +86,16 @@ body{
     height: auto !important;
 }
 
+.msg_data .msg_audio{
+	padding-top: 1vh;
+	width: 100%;
+}
+
+.msg_data .msg_video{
+	width: 100%;
+    height: auto !important;
+}
+
 .inherit_size{
 	font-size: 6em !important;
 }

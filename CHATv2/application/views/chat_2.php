@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <title>Chat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="http://semantic-ui.com/dist/semantic.css">
@@ -13,7 +14,7 @@
     <link rel="stylesheet" href="<?php echo base_url('asset/css/modified.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Latest compiled JavaScript -->
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="http://192.168.0.109:3000/socket.io/socket.io.js"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.js"></script>
@@ -23,9 +24,10 @@
     <script src="<?php echo base_url(); ?>asset/JS/moment-timezone.js"></script>
     <script src="<?php echo base_url(); ?>asset/JS/moment-timezone-with-data.js"></script>
     <script>
-        var socket = io('http://localhost:3000');
+        var socket;
 
         function join(nama, id, img, room, room_list){
+            window.socket = io('http://192.168.0.109:3000')
             window.socket.emit("join", id, nama, room, room_list, img);
         };
 
@@ -103,10 +105,15 @@
                     data: formData,                         
                     type: 'POST',
                     success: function(data){
-                        $('#upload_file').val('');
-                        $('#form_file')[0].reset();
-                        socket.emit('chat message', data.url, data.tipe, data.time);
-                        $('.md_loading').modal('hide');
+                        if(data){
+                            $('#upload_file').val('');
+                            $('#form_file')[0].reset();
+                            socket.emit('chat message', data.url, data.tipe, data.time);
+                            $('.md_loading').modal('hide');
+                        }else{
+                            $('.md_loading').modal('hide');
+                            $('.md_errorfile').modal('show');
+                        }
                     },
                     error: function(data){
                         $('.md_loading').modal('hide');
@@ -305,9 +312,7 @@
                 receivemessage(id, $('#send_user').val(), who, msg, time, img_url, tipe);
                 scrolltobottom();
             });
-        });
-        
-        join('<?php echo $nama ?>', '<?php echo $id ?>', '<?php echo $profilepict ?>', '<?php echo $room ?>', <?php $temp = []; foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }; echo json_encode($temp);?>);    
+        });    
     </script>
 </head>
 <body>
@@ -328,6 +333,33 @@
         </div>
     </div>
     <!-- END of Error -->
+    <!-- Modal Error -->
+    <div class="ui basic modal md_errorfile">
+        <div class="ui icon header">
+            <i class="warning sign icon"></i>Upload File Failed
+        </div>
+        <div class="content">
+            <div class="ui center aligned segment" style="background: transparent;">
+                <p>Sorry! There is error occuring.</p>
+                <p>Please check file that you're going to upload not excess 10 MB and have one of allowed extension:</p>
+                <p>gif, jpg, png, rar, zip, doc, docx, ppt, pptx, xls, xlsx, pdf, txt, mp3, mp4</p>
+                <div class="actions">
+                    <div class="ui blue ok inverted button">
+                        <i class="checkmark icon"></i>Ok
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END of Error -->
+    <!-- Modal Image -->
+    <div class="ui modal">
+        <div class="header">Header</div>
+        <div class="image content">
+            <img class="image" id="image_modal">
+        </div>
+    </div>
+    <!-- END of Modal Image -->
     <!-- Modal Loading -->
     <div class="ui basic modal md_loading">
         <div class="ui icon header">
@@ -504,10 +536,14 @@
                                     $row['chat_msg'] = "[system] Image send by user";
                                 }else if($row['tipe'] == 3){
                                     $row['chat_msg'] = "[system] File send by user";
+                                }else if($row['tipe'] == 4){
+                                    $row['chat_msg'] = "[system] Audio send by user";
+                                }else if($row['tipe'] == 5){
+                                    $row['chat_msg'] = "[system] Video send by user";
                                 }
                             }
 
-                            echo '<div class="item change_room" style="padding-left: 0px; padding-right: 0px;cursor:pointer;" id="room_'.$row['id_room'].'"><div class="ui cards"><div class="ui fluid card" style="margin: 0px;"><div class="content '.($row['id_room'] == $room ? 'activated' : '').'"><img class="right floated mini ui image" src="'.base_url('pro_pict/').$row['room_pict'].'"><div class="header">'.$row['nama_room'].'</div><div class="meta" id="msg_time_'.$row['id_room'].'">'.($row['time'] ? $formated_timestamp : '').'</div><div class="description ui grid"><div class="ten wide column" id="msg_new_'.$row['id_room'].'" style="padding-top:7px; overflow:hidden; max-height: 20.33px; padding-bottom: 0px; margin-bottom:14px;">'.($row['chat_msg'] ? $row['chat_msg'] : '').'</div><div class="six wide column" style="padding-top: 0px;"><div class="right floated ui red label '.($row['unread_count'] > 0 ? '' : 'hiddened').'" id="notif_'.$row['id_room'].'"> '.(int)$row['unread_count'].' </div></div></div></div></div></div></div>';
+                            echo '<div class="item change_room" style="padding-left: 0px; padding-right: 0px;cursor:pointer;" id="room_'.$row['id_room'].'"><div class="ui cards"><div class="ui fluid card" style="margin: 0px;"><div class="content '.($row['id_room'] == $room ? 'activated' : '').'"><img class="right floated mini ui image" src="'.base_url('pro_pict/').$row['room_pict'].'"><div class="header">'.$row['nama_room'].'</div><div class="meta" id="msg_time_'.$row['id_room'].'">'.($row['time'] ? $formated_timestamp : '').'</div><div class="description ui grid"><div class="ten wide column" id="msg_new_'.$row['id_room'].'" style="padding-top:7px; overflow:hidden; max-height: 21px; padding-bottom: 0px; margin-bottom:14px;">'.($row['chat_msg'] ? $row['chat_msg'] : '').'</div><div class="six wide column" style="padding-top: 0px;"><div class="right floated ui red label '.($row['unread_count'] > 0 ? '' : 'hiddened').'" id="notif_'.$row['id_room'].'"> '.(int)$row['unread_count'].' </div></div></div></div></div></div></div>';
                         }
                     }
                 ?>
@@ -615,5 +651,6 @@
 <script>
     attach_basic();
     init();
+    join('<?php echo $nama ?>', '<?php echo $id ?>', '<?php echo $profilepict ?>', '<?php echo $room ?>', <?php $temp = []; foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }; echo json_encode($temp);?>);
 </script>
 </html>

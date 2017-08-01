@@ -53,10 +53,14 @@
                                     $row['chat_msg'] = "[system] Image send by user";
                                 }else if($row['tipe'] == 3){
                                     $row['chat_msg'] = "[system] File send by user";
+                                }else if($row['tipe'] == 4){
+                                    $row['chat_msg'] = "[system] Audio send by user";
+                                }else if($row['tipe'] == 5){
+                                    $row['chat_msg'] = "[system] Video send by user";
                                 }
                             }
 
-                            echo '<div class="item change_room" style="padding-left: 0px; padding-right: 0px;cursor:pointer;" id="room_'.$row['id_room'].'"><div class="ui cards"><div class="ui fluid card" style="margin: 0px;"><div class="content '.($row['id_room'] == $room ? 'activated' : '').'"><img class="right floated mini ui image" src="'.base_url('pro_pict/').$row['room_pict'].'"><div class="header">'.$row['nama_room'].'</div><div class="meta" id="msg_time_'.$row['id_room'].'">'.($row['time'] ? $formated_timestamp : '').'</div><div class="description ui grid"><div class="ten wide column" id="msg_new_'.$row['id_room'].'" style="padding-top:7px; overflow:hidden; max-height: 20.33px; padding-bottom: 0px; margin-bottom:14px;">'.($row['chat_msg'] ? $row['chat_msg'] : '').'</div><div class="six wide column" style="padding-top: 0px;"><div class="right floated ui red label '.($row['unread_count'] > 0 ? '' : 'hiddened').'" id="notif_'.$row['id_room'].'"> '.(int)$row['unread_count'].' </div></div></div></div></div></div></div>';
+                            echo '<div class="item change_room" style="padding-left: 0px; padding-right: 0px;cursor:pointer;" id="room_'.$row['id_room'].'"><div class="ui cards"><div class="ui fluid card" style="margin: 0px;"><div class="content '.($row['id_room'] == $room ? 'activated' : '').'"><img class="right floated mini ui image" src="'.base_url('pro_pict/').$row['room_pict'].'"><div class="header">'.$row['nama_room'].'</div><div class="meta" id="msg_time_'.$row['id_room'].'">'.($row['time'] ? $formated_timestamp : '').'</div><div class="description ui grid"><div class="ten wide column" id="msg_new_'.$row['id_room'].'" style="padding-top:7px; overflow:hidden; max-height: 21px; padding-bottom: 0px; margin-bottom:14px;">'.($row['chat_msg'] ? $row['chat_msg'] : '').'</div><div class="six wide column" style="padding-top: 0px;"><div class="right floated ui red label '.($row['unread_count'] > 0 ? '' : 'hiddened').'" id="notif_'.$row['id_room'].'"> '.(int)$row['unread_count'].' </div></div></div></div></div></div></div>';
                         }
                     }
                 ?>
@@ -67,7 +71,7 @@
             <div id="main_container">
                 <div class="ui top attached menu" id="bg_topmenu">
                     <div class="hiddened" id="unread" value="<?php echo $unread ?>"></div>
-                    <div class="hiddened" id="list_chat" value="<?php echo count($list_chat) ?>"></div>
+                    <div class="hiddened" id="list_chat" value="<?php echo ($list_chat? $list_chat[count($list_chat) - 1]['idChat'] : '') ?>"></div>
                     <?php 
                         if($room_info){
                             echo '<a class="brand item" id="grouproom_name" value="'.$room_info['nama_room'].'"><img class="ui avatar image" id="grouproom_image" value="'.$room_info['room_pict'].'" src="'.base_url('pro_pict/').$room_info['room_pict'].'"> &nbsp;&nbsp;&nbsp;'.$room_info['nama_room'].'</a><div class="right menu"><a class="item bt_sendfile"><i class="attach icon"></i> Send File</a></div>';
@@ -107,7 +111,13 @@
                                             $row["chatMsg"] = '<img class="msg_image" src="'.$url.'" alt="'.$row["chatMsg"].'">';
                                         }else if($row['tipe'] == 3){
                                             $url = base_url('./file_upload/') . $row["chatMsg"];
-                                            $row["chatMsg"] ='<a href="'.$url.'" download><div class="ui center aligned segment"><i class="download icon" style="font-size: 6em;"></i></div></a>';
+                                            $row["chatMsg"] ='<p>'.$row["chatMsg"].' :</p><a href="'.$url.'" download><div class="ui center aligned segment"><i class="download icon" style="font-size: 6em !important;"></i></div></a>';
+                                        }else if($row['tipe'] == 4){
+                                            $url = base_url('./file_upload/') . $row["chatMsg"];
+                                            $row["chatMsg"] = '<p>'.$row["chatMsg"].' :</p><audio controls class="msg_audio"><source src="'.$url.'" type="audio/mpeg"></audio>';
+                                        }else if($row['tipe'] == 5){
+                                            $url = base_url('./file_upload/') . $row["chatMsg"];
+                                            $row["chatMsg"] = '<video controls class="msg_video"><source src="'.$url.'" type="video/mp4"></video>';
                                         }
 
                                         if($id == $row['ID']){
@@ -169,9 +179,6 @@
                     </div>
                 </div>
             </div>
-            <script type="text/javascript">
-                scroll('<?php echo $unread ?>', '<?php echo count($list_chat) ?>');
-            </script>
         </div>
     </div>
 </html>

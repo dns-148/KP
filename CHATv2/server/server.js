@@ -42,7 +42,7 @@ io.on('connection', function(socket){
 		var new_room_id = room_id;
 		if(past_room_id != new_room_id){
 			if(new_room_id.toString() != "-1"){
-				if(parseInt(past_room_id) == -1){
+				if(parseInt(past_room_id) > -1){
 					socket.leave(past_room_id);
 				}
 				socket.join(new_room_id);
@@ -55,9 +55,11 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('chat message', function(msg, tipe, time){
-		var subscribe_room = 's_' + users[socket.id].room_id;
-		io.to(users[socket.id].room_id).emit('chat message', users[socket.id].user_id, users[socket.id].name, msg, time, users[socket.id].img, tipe);
-		io.to(subscribe_room).emit('new message notif', msg, time, users[socket.id].room_id, tipe);
+		if(users[socket.id]){
+			var subscribe_room = 's_' + users[socket.id].room_id;
+			io.to(users[socket.id].room_id).emit('chat message', users[socket.id].user_id, users[socket.id].name, msg, time, users[socket.id].img, tipe);
+			io.to(subscribe_room).emit('new message notif', msg, time, users[socket.id].room_id, tipe);
+		}
 	});
 
 	socket.on('add user', function(room, response, name, image){
