@@ -20,7 +20,7 @@ Class db_chat extends CI_Model{
 
 	function getLastChat($room_id, $date_join){
 		$room = 'public.Room'.$room_id;
-		$this->db->select('chatMsg, time');
+		$this->db->select('chatMsg, time, tipe');
 		$this->db->from($room);
 		$this->db->where('time >', $date_join);
 		$this->db->order_by('time',"desc");
@@ -32,25 +32,29 @@ Class db_chat extends CI_Model{
 		{
 			$formated_result = array(
 				'chatMsg' => $result[0]['chatMsg'],
-				'time'	=> $result[0]['time']
+				'time'	=> $result[0]['time'],
+				'tipe'	=> $result[0]['tipe']
 				);
 		}else{
 			$formated_result = array(
 				'chatMsg' => NULL,
-				'time'	=> NULL
+				'time'	=> NULL,
+				'tipe' => NULL
 				);
 		}
 		return $formated_result;
 	}
 
-	function addChat($room, $id_user, $time, $tipe, $msg){
+	function addChat($room, $id_user, $tipe, $msg){
+		$timestamp = date('Y-m-d H:i:s');
 		$data = array(
 				'idPoster' => $id_user,
 				'tipe' => $tipe,
 				'chatMsg' => $msg,
-				'time' => $time
+				'time' => $timestamp
 			);
 		$this->db->insert($room, $data);
+		return $timestamp;
 	}
 }
 ?>

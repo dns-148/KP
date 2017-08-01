@@ -20,19 +20,20 @@ class user_auth extends CI_Controller {
 
 	function check_database($password){
 	 	$email = $this->input->post('email');
+	 	$timezone = $this->input->post('timezone');
 	 	$result = $this->db_user->login($email, $password);
 	 	if($result){
 	 		$sess_array = array();
 
-			foreach($result as $row){
-				$sess_array = array(
-					'id' => $row->ID,
-					'nama' => $row->Nama,
-					'profilepict' => $row->ProfilePict,
-					// 'room' => -1
-				);
-		    	$this->session->set_userdata('logged_in', $sess_array);
-	    	}
+			$sess_array = array(
+				'id' => $result[0]['ID'],
+				'nama' => $result[0]['Nama'],
+				'profilepict' => $result[0]['ProfilePict'],
+				'room' => -2,
+				'timezone' => $timezone
+			);
+		    $this->session->set_userdata('logged_in', $sess_array);
+
     		return TRUE;
 		}else{
 			$this->form_validation->set_message('check_database', 'Invalid username or password');

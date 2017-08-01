@@ -10,65 +10,105 @@ class chat extends CI_Controller {
 			$session_data = $this->session->userdata('logged_in');
      		$data['nama'] = $session_data['nama'];
      		$data['id'] = $session_data['id'];
+               $data['timezone'] = $session_data['timezone'];
      		$data['profilepict'] = $session_data['profilepict'];
      		$data['friend'] = $this->listing_friend($data['id']);
-     		
-     		if($prev_id != NULL){
-     			$data['unread'] = ($this->db_user->getUnread($prev_id, $data['id']))[0]['countUnread'];
-     			$this->db_user->updateUnread($prev_id, $data['id'], 0);
-     		}else{
-     			$data['unread'] = -1;
-     		}
 
      		$list_room = $this->db_user->roomParticipate($data['id']);
      		
-     		if($list_room){
-     			if($prev_id != NULL){
-     				$data['room'] = $prev_id;
-	     			// $session_data['room'] = $prev_id;
+          	if($list_room){
+          		$data['room'] = -2;
+          		$session_data['room'] = -2;
+          		$data['room_info'] = NULL;
+          		$data['list_user'] = NULL;
+                    $data['unread'] = 0;
+          		$list_room = $this->get_roomdata($list_room);
+          		$data['allroom_info'] = $this->get_lastchat($list_room);
+          		usort($data['allroom_info'], array($this,'cmp_inv_time'));
+          	}else{
+          		$data['room'] = -2;
+          		$data['allroom_info'] = NULL;
+          		$data['room_info'] = NULL;
+          		$data['last_chat'] = NULL;
+          		$data['list_user'] = NULL;
+                    $data['unread'] = 0;
+          	}
 
-	     			$this->session->set_userdata('logged_in', $session_data);
-	     			$date_join = $this->db_user->fetchDateJoin($data['room'], $data['id']);
-	     			$data['room_info'] = $this->db_room->info($data['room'], 0, $date_join);
-     			// }else if($session_data['room'] > -1){
-     			// 	$data['room'] = $session_data['room'];
-     			// 	$date_join = $this->db_user->fetchDateJoin($data['room'], $data['id']);
-	     		// 	$data['room_info'] = $this->db_room->info($data['room'], 0, $date_join);
-     			}else{
-     				$data['room'] = -1;
-     				// $session_data['room'] = -1;
-     				$data['room_info'] = NULL;
-     				$data['list_user'] = NULL;
+     		$data['list_chat'] = false;
+     		$data['user_participate'] = false;
 
-     				$this->session->set_userdata('logged_in', $session_data);
-     			}
-
-     			$list_room = $this->get_roomdata($list_room);
-     			$data['allroom_info'] = $this->get_lastchat($list_room);
-     			usort($data['allroom_info'], array($this,'cmp_inv_time'));
-     		}else{
-     			$data['room'] = -1;
-     			$data['allroom_info'] = NULL;
-     			$data['room_info'] = NULL;
-     			$data['last_chat'] = NULL;
-     			$data['list_user'] = NULL;
-     		}
-
-     		if($data['room'] > -1){
-     			$nama_room = 'public.Room' . $data['room'];
-     			$date_join = $this->db_user->fetchDateJoin($data['room'], $data['id']);
-     			$data['list_chat'] = $this->db_chat->fetchAll($nama_room, $date_join[0]['dateJoin']);
-     			$data['user_participate'] = $this->db_room->allUserParticipate($data['room']);
-     			$data['list_user'] = $this->db_room->getIdUserParticipate($data['room']);
-     		}else{
-     			$data['list_chat'] = false;
-     			$data['user_participate'] = false;
-     		}
      		$this->load->view('chat_2', $data);
 		}else{
 			redirect('login', 'refresh');
 		}
 	}
+
+	public function room()
+	{
+		if($this->session->userdata('logged_in')){
+			$prev_id = $this->input->get('room', true);
+			$session_data = $this->session->userdata('logged_in');
+
+               $data = $this->prepare_data($prev_id, $session_data['id']);
+               $data['nama'] = $session_data['nama'];
+               $data['id'] = $session_data['id'];
+               $data['timezone'] = $session_data['timezone'];
+               $data['profilepict'] = $session_data['profilepict'];
+               $session_data['room'] = $data['room'];
+
+               $this->session->set_userdata('logged_in', $session_data);
+     		$this->load->view('chat', $data);
+		}else{
+			redirect('login', 'refresh');
+		}
+	}
+
+     public function modal(){
+          $session_data = $this->session->userdata('logged_in');
+          $data['friend'] = $this->listing_friend($session_data['id']);
+          $data['list_user'] = $this->db_room->getIdUserParticipate($session_data['room']);
+          $this->load->view('modal', $data);
+     }
+
+     public function prepare_data($room_id_ref, $user_id){
+          $data['room'] = $room_id_ref;
+          $data['unread'] = ($this->db_user->getUnread($data['room'], $user_id))[0]['countUnread'];
+          $this->db_user->updateUnread($room_id_ref, $user_id, 0);
+
+          $list_room = $this->db_user->roomParticipate($user_id);
+               
+          if($list_room){
+               if($room_id_ref > -1){
+                    $data['room'] = $room_id_ref;
+                    $date_join = $this->db_user->fetchDateJoin($data['room'], $user_id);
+                    $data['room_info'] = $this->db_room->info($data['room'], 0, $date_join);
+               }else{
+                    $data['room'] = -1;
+                    $data['room_info'] = NULL;
+               }
+
+               $list_room = $this->get_roomdata($list_room);
+               $data['allroom_info'] = $this->get_lastchat($list_room);
+               usort($data['allroom_info'], array($this,'cmp_inv_time'));
+          }else{
+               $data['room'] = -1;
+               $data['allroom_info'] = NULL;
+               $data['room_info'] = NULL;
+               $data['last_chat'] = NULL;
+          }
+
+          if($data['room'] > -1){
+               $nama_room = 'public.Room' . $data['room'];
+               $date_join = $this->db_user->fetchDateJoin($data['room'], $user_id);
+               $data['list_chat'] = $this->db_chat->fetchAll($nama_room, $date_join[0]['dateJoin']);
+               $data['user_participate'] = $this->db_room->allUserParticipate($data['room']);
+          }else{
+               $data['list_chat'] = false;
+               $data['user_participate'] = false;
+          }
+
+          return $data;
+     }
 
 	public function cmp_inv_time(array $a, array $b) {
 		$a_time = ($a['time']? $a['time'] : $a['time_created']);
@@ -98,41 +138,18 @@ class chat extends CI_Controller {
 			$last_chat[$room['id_room']] = $room;
 			$last_chat[$room['id_room']]['chat_msg'] = $result['chatMsg'];
 			$last_chat[$room['id_room']]['time'] = $result['time'];
+               $last_chat[$room['id_room']]['tipe'] = $result['tipe'];
 		}
 		return $last_chat;
 	}
 
 	public function listing_friend($id)
 	{
-		// $result = $this->db_user->friendList($id);
-		// if($result){
-	 // 		$data = array();
-
-		// 	foreach($result as $row){
-		// 		if($row->idUser1 == $id){
-		// 			$friend_id = $row->idUser2;
-		// 		}else{
-		// 			$friend_id = $row->idUser1;
-		// 		}
-		// 		$raw_friend_data = $this->db_user->userData($friend_id);
-				
-		// 		if($raw_friend_data){
-		// 			foreach($raw_friend_data as $row){
-		// 				$friend_data = array(
-		// 					'id' => $row->ID,
-		// 					'nama' => $row->Nama,
-		// 					'profilepict' => $row->ProfilePict,
-		// 				);
-		// 				array_push($data, $friend_data);
-		// 	    	}
-		// 		}
-	 //    	}
-  //   		return $data;
-			$result = $this->db_user->allUserData();
-			if($result){
-				return $result;
-			}else{
-				return false;
-			}
+		$result = $this->db_user->allUserData($id);
+		if($result){
+			return $result;
+		}else{
+			return false;
+		}
 	}
 }

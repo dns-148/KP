@@ -32,7 +32,7 @@ Class db_room extends CI_Model{
 		if($tipe == 2){
 			$pict = 'user_0.png';
 		}
-		$time = date('Y-m-j H:i:s');
+		$time = date('Y-m-d H:i:s');
 		$data = array(
 				'namaRoom' => $nama_room,
 				'idAdmin' => $admin_id,

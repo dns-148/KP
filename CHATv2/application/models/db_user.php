@@ -12,15 +12,16 @@ Class db_user extends CI_Model{
 	 
 		if($query->num_rows() == 1)
 		{
-			return $query->result();
+			return $query->result_array();
 		}else{
 			return false;
 		}
 	}
 
-	function allUserData(){
+	function allUserData($id){
 		$this->db->select('ID, Nama, ProfilePict');
 		$this->db->from('public.user');
+		$this->db->where('ID !=', $id);
  
 		$query = $this->db->get();
 	 

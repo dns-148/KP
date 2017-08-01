@@ -1,5 +1,10 @@
+function sf_cancel(){
+	$('.md_sendfile').modal('hide');
+	$('#upload_file').val('');
+	$('#form_file')[0].reset();
+}
+
 function cc_cancel(){
-	$('.md_createchat').modal('hide');
 	$('#cc_chat_name').val('');
 	$('#cc_friend_list').val('');
 	$("#cc_selection a").remove();
@@ -22,7 +27,6 @@ function au_add(response, server_url){
 }
 
 function au_cancel(){
-	$('.md_adduser').modal('hide');
 	$('#au_room').val('');
 	$('#au_list').val('');
 	$("#au_selection a").remove();
@@ -69,29 +73,35 @@ function updateuser(list_user){
 	}
 }
 
-function newmessage(msg, time, room, room_id, basic_url, user_id){
+function newmessage(msg, time, room, room_id, basic_url, tipe){
 	var temp_item = "#room_" + room_id;
 	$(temp_item).prependTo("#irp");
 	var temp_item = "#msg_new_" + room_id;
-	$(temp_item).text(msg);
+	if(parseInt(tipe) == 2){
+		$(temp_item).text("[system] Image send by user");
+	}else if(parseInt(tipe) == 3){
+		$(temp_item).text("[system] File send by user");
+	}else{
+		$(temp_item).text(msg);
+	}
 	var temp_item = "#msg_time_" + room_id;
 	$(temp_item).text(time);
-	if(room_id != room){
+	if(parseInt(room_id) != parseInt(room)){
 		var temp_item = "#notif_" + room_id;
 		var unread = parseInt($(temp_item).text()) + 1;
 		$(temp_item).text(unread);
-		$(temp_item).removeClass('hiddened');
+		$(temp_item).removeClass('hidden');
 
 		var data = { 
 			room: room_id, 
-			user_id: user_id,
 			unread : unread
 		};
 		post_data(data, basic_url);
 	}
 }
 
-function receivemessage(sender_id, id, who, msg, time, img_url){
+function receivemessage(sender_id, id, who, msg, time, img_url, tipe){
+	var description;
 	if(sender_id == id){
 		$('.main_chat').append('<div class="two column row"><div class="four wide column"></div><div class="twelve wide column"><div class="ui right floated comments"> <div class="comment"><a class="avatar c_avatar"></a><div class="content com_con"><a class="author c_author"></a><div class="metadata"></div><div class="text msg_data mod_send"></div></div></div></div></div></div>');
 	}else{
@@ -102,7 +112,13 @@ function receivemessage(sender_id, id, who, msg, time, img_url){
 	$('.c_author').last().text(who);
 	var date = $('<div>', {"class": "date"}).text(time);
 	$('.metadata').last().append(date);
-	var description = $('<p>').text(msg);
+	if(parseInt(tipe) == 2){
+		description = $('<img>').attr("src", msg).addClass('msg_image');
+	}else if(parseInt(tipe) == 3){
+		description = '<a href="' + msg +'" download><div class="ui center aligned segment"><i class="download icon" style="font-size: 6em;"></i></div></a>';
+	}else{
+		description = $('<p>').text(msg);
+	}
 	$('.msg_data').last().append(description);
 }
 
@@ -111,12 +127,32 @@ function scrolltobottom(){
 	$('.main').animate({scrollTop: distance}, 'slow');
 }
 
+function attach_basic(){
+	$('#sd_chatlist')
+	.sidebar({
+		context: $('.bottom.segment')
+	}).sidebar('attach events', '#sd_clbutton');
+
+	$('#sd_groupuser')
+	.sidebar({
+		context: $('.bottom.segment')
+	}).sidebar('attach events', '#sd_gubutton');
+
+	if($('#send_room').val() > -1){
+		$('.md_adduser').modal('attach events', '#au_button', 'show');
+		$('.md_leavegroup').modal('attach events', '#lg_button', 'show');
+	}
+
+	$('.dropdown').dropdown({});
+}
+
 function scroll(unread, count_chat){
-	if(unread > -1){
+	if(unread && unread > -1){
 		if(unread > 0 && count_chat > 1){
 			var child = $('#chat_' + (count_chat - unread));
-			var parent = $('#chat_1');
-			var distance =  child.offset().top-parent.offset().top;
+			var p_id = "#" + $(".main_chat:first-child").attr("id");
+			var parent = $(p_id);
+			var distance =  child.offset().top - parent.offset().top;
 			$('.main').animate({scrollTop: distance}, 'slow');
 		}else{
 			scrolltobottom();

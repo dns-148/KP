@@ -9,16 +9,8 @@ class chat_manager extends CI_Controller {
 		$user_id = $this->input->post('user_id');
 		$users = $this->input->post('friend_list');
 		$friend_list = explode(',', $users);
-		// if(substr_count($friend_list, ',') < 1){
-		// 	$session_data = $this->session->userdata('logged_in');
-		// 	$tipe = 1;
-		// 	$data = $this->db_user->userData($friend_list);
-		// 	$group_name = $user_id;
-		// 	$picture = $user_id;
-		// }else{
 		$tipe = 2;
 		$picture = NULL;
-		// }
 
 		$id_room = $this->db_room->addRoom($user_id, $group_name, $tipe, $picture);
 		$this->db_room->linkUser($friend_list, $user_id, $id_room);
@@ -29,25 +21,27 @@ class chat_manager extends CI_Controller {
 			'image' => 'user_0.png',
 			'room' => $id_room,
 			'list' => $friend_list,
-			'url' => base_url('chat/index?room=').$id_room
+			'url' => base_url('chat/room?room=').$id_room
 			);
 		echo json_encode($return_val);
 	}
 
 	public function send_msg(){
-		$room_id = $this->input->post('room');
+		$session_data = $this->session->userdata('logged_in');
+		$room_id = $session_data['room'];
 		$room = 'public.Room' . $room_id;
-		$user_id = $this->input->post('user_id');
-		$time = $this->input->post('time');
+		$user_id = $session_data['id'];
 		$tipe = $this->input->post('tipe');
 		$msg = $this->input->post('msg');
 
-		$this->db_chat->addChat($room, $user_id, $time, $tipe, $msg);
+		$unformated_time = $this->db_chat->addChat($room, $user_id, $tipe, $msg);
+		echo json_encode($unformated_time);
 	}
 
 	public function update_unread(){
+		$session_data = $this->session->userdata('logged_in');
 		$room_id = $this->input->post('room');
-		$user_id = $this->input->post('user_id');
+		$user_id = $session_data['id'];
 		$unread = $this->input->post('unread');
 
 		$this->db_user->updateUnread($room_id, $user_id, $unread);
@@ -80,5 +74,42 @@ class chat_manager extends CI_Controller {
 		$this->db_room->leaveRoom($room_id, $user_id);
 
 		echo json_encode(true);
+	}
+
+	public function upload_file(){
+		$config['upload_path']		= './file_upload/';
+		$config['allowed_types']	= 'gif|jpg|png|rar|zip|doc|docx|ppt|pptx|xls|xlsx|pdf|txt';
+		$config['max_size']			= 10000;
+
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload('file')){
+			 $error = array('error' => $this->upload->display_errors());
+			 echo print_r($error);
+		}else{
+			$upload_data = $this->upload->data();
+			$file_name = $upload_data['file_name'];
+			$ext_file = $upload_data['file_type'];
+			$url = base_url('./file_upload/') . $file_name;
+
+			if(strpos($ext_file, "image") !== false){
+				$tipe = 2;
+			}else{
+				$tipe = 3;
+			}
+
+			$session_data = $this->session->userdata('logged_in');
+			$room_id = $session_data['room'];
+			$room = 'public.Room' . $room_id;
+			$user_id = $session_data['id'];
+			
+			$time = $this->db_chat->addChat($room, $user_id, $tipe, $file_name);
+			$return_val = array(
+				'tipe' => $tipe,
+				'time' => $time,
+				'url' => $url
+				);
+			echo json_encode($return_val);
+		}
 	}
 }
