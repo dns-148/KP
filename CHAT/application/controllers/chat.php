@@ -72,7 +72,8 @@ class chat extends CI_Controller {
 
      public function prepare_data($room_id_ref, $user_id){
           $data['room'] = $room_id_ref;
-          $data['unread'] = ($this->db_user->getUnread($data['room'], $user_id))[0]['countUnread'];
+          $temp_unread = $this->db_user->getUnread($data['room'], $user_id);
+          $data['unread'] = $temp_unread[0]['countUnread'];
           $this->db_user->updateUnread($room_id_ref, $user_id, 0);
 
           $list_room = $this->db_user->roomParticipate($user_id);

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div class="ui bottom attached segment pushable" id="body_page" style="margin: 0px;height: 100vh;width: 100vw;overflow: hidden;border: none;">
+    <div class="ui bottom attached segment pushable" id="body_page" style="margin: 0px; width: 100vw;overflow: hidden;border: none;">
         <div class="ui inverted left vertical sidebar menu" id="sd_chatlist" style="
         overflow: hidden !important;">
         <!-- Move content here -->
         </div>
-        <div class="ui inverted right vertical sidebar menu" id="sd_groupuser">
+        <div class="ui inverted right vertical sidebar menu" id="sd_groupuser" style="overflow:hidden;">
         </div>
         <div class="ui wide inverted left vertical sidebar menu visible" id="bg_chatlist" style="
         overflow: hidden !important;">
@@ -150,7 +150,7 @@
             <input type="hidden" id="send_user" value="<?php echo ($room > -2? $id : NULL) ?>"/>
             <input type="hidden" id="send_all_room" value="<?php if($room > -2 ){ $temp = []; if($allroom_info){foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }}else{$temp = -1;}; echo json_encode($temp); }else{ echo '';}; ?>"/>
             <div class="ui wide inverted right vertical sidebar menu visible" id="bg_groupuser" style="width: 20vw; overflow: hidden;">
-                <div id="user_container">
+                <div id="user_container" style="overflow:hidden;">
                     <?php if($room_info){ ?>
                     <div class="item">
                         <div class="ui animated fade button" tabindex="0" id="au_button">
@@ -168,7 +168,7 @@
                     </div>
                     <?php }; ?>
                     <div class="item"><div class="center big_bold">User in group: </div></div>
-                    <div class="column" id="list_user" style="height: calc(100vh - 102px); overflow: hidden;overflow-y: auto;">
+                    <div id="list_user" style="overflow-x: hidden; overflow-y: auto; height: calc(100vh - 102px)">
                     <?php
                         if($user_participate){
                             foreach ($user_participate as $row) {

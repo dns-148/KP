@@ -190,8 +190,10 @@ function scroll(unread, count_chat){
 	if(unread && unread > -1){
 		if(unread > 0 && count_chat > 1){
 			var child = $('#chat_' + (count_chat - unread));
-			var p_id = "#" + $(".main_chat:first-child").attr("id");
+			console.log($('.main_chat:first-child').attr('id'));
+			var p_id = '#' + ($('.main_chat:first-child').attr('id'));
 			var parent = $(p_id);
+			console.log(p_id);
 			var distance =  child.offset().top - parent.offset().top;
 			$('.main').animate({scrollTop: distance}, 'slow');
 		}else{
@@ -208,11 +210,18 @@ $("#menu-toggle").click(function(e) {
 function check_size(){
 	var is_iPad = navigator.userAgent.match(/iPad/i) != null;
 	if (window.matchMedia('(min-width: 1024px)').matches && !is_iPad) {
+		var t_height = window.innerHeight + 'px';
+		var temp2 = (window.innerHeight - 102) + 'px';
+		var temp3 = (window.innerHeight - 186) + 'px';
+		$('#body_page').css('height', t_height);
+		$('#irp').css('height', temp3);
+		$('#list_user').css('height', temp2);
 		$('.big_bold').css('font-size','2vw !important;');
 		$('#item_container').prependTo('#bg_chatlist');
 		$('#user_container').prependTo('#bg_groupuser');
 		$('#bg_chatlist').addClass('visible');
 		$('#bg_groupuser').addClass('visible');
+		$('#bg_groupuser').css('height', t_height);
 		$('#bg_topmenu').removeClass('hiddened');
 		$('#sm_topmenu').addClass('hiddened');
 		$('#main_body').css('width','calc(100vw - 350px)');
@@ -233,8 +242,16 @@ function check_size(){
 		$('#msg_area').addClass('fifteen wide column');
 		$('#btn_send').removeClass('two wide column');
 		$('#btn_send').addClass('one wide column');
-	} else if(window.matchMedia('(min-width: 768px)').matches) {
-		var temp = 'calc(' + window.innerHeight + 'px - 100px)';
+		$('#msg_area').css('padding-right', '14px');
+		$('#msg_area').css('margin-left', '0px');
+	}else if(window.matchMedia('(min-width: 768px)').matches) {
+		var t_height = window.innerHeight + 'px';
+		var temp2 = (window.innerHeight - 102) + 'px';
+		var temp = 'calc(' + t_height + ' - 100px)';
+		var temp3 = (window.innerHeight - 186) + 'px';
+		$('#body_page').css('height', t_height);
+		$('#irp').css('height', temp3);
+		$('#list_user').css('height', temp2);
 		$('.big_bold').css('font-size','5vw !important;');
 		$('#item_container').prependTo('#sd_chatlist');
 		$('#user_container').prependTo('#bg_groupuser');
@@ -261,11 +278,21 @@ function check_size(){
 		$('#msg_area').addClass('fourteen wide column');
 		$('#btn_send').removeClass('one wide column');
 		$('#btn_send').addClass('two wide column');
+		$('#msg_area').css('padding-right', '14px');
+		$('#msg_area').css('margin-left', '0px');
 	}else{
+		var t_height = window.innerHeight + 'px';
+		var temp2 = (window.innerHeight - 102) + 'px';
 		var temp = 'calc(' + window.innerHeight + 'px - 90px)';
+		var temp3 = (window.innerHeight - 186) + 'px';
+		$('#body_page').css('height', t_height);
+		$('#irp').css('height', temp3);
+		$('#list_user').css('height', temp2);
 		$('.big_bold').css('font-size','5vw !important;');
 		$('#item_container').prependTo('#sd_chatlist');
 		$('#user_container').prependTo('#sd_groupuser');
+		$('#sd_groupuser').css('height', t_height);
+		$('#user_container').css('height', t_height);
 		$('#sd_gubutton').removeClass('hiddened');
 		$('#bg_chatlist').removeClass('visible');
 		$('#bg_groupuser').removeClass('visible');
@@ -274,6 +301,8 @@ function check_size(){
 		$('#main_body').css('width','100vw');
 		$('#main_container').css('width','100vw');
 		$('.main').css('height',temp);
+		$('#msg_area').css('padding-right', '7px');
+		$('#msg_area').css('margin-left', '-7px');
 		$('.chat_message').css('height', '35px');
 		$('#bt_sndmsg').css('width', '35px');
 		$('#bt_sndmsg').css('height', '35px');
@@ -472,11 +501,24 @@ function init(){
 		}
 	});
 
+	$(document).on("keyup", ".chat_message", function(e){
+		var is_iPad = navigator.userAgent.match(/iPad/i) != null;
+		if (window.matchMedia('(min-width: 1024px)').matches && !is_iPad){
+			if (e.which === 13 && e.shiftKey) {
+				var msg_val =  $('.chat_message').val();
+				msg_val = msg_val + '\n';
+				$('.chat_message').val(msg_val);
+			}else if (event.keyCode == 13) {
+	    		$('.formsend').submit();
+			}
+		}
+	})
+
 	$(document).on("submit",".formsend", function(e){
 		e.preventDefault();
 		e.returnValue = false;
-		if( $('#send_room').val() > -1){
-			var msg_val =  $('.chat_message').val();
+		var msg_val =  $('.chat_message').val();
+		if( $('#send_room').val() > -1 && (/\S/.test(msg_val))){
 			var data = { 
 				tipe : 1,
 				msg : msg_val

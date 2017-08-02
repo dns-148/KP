@@ -41,24 +41,46 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('update data', function(user_id, name, room_id, room_list, img){
-		var past_room_id = users[socket.id]['room_id'];
-		var new_room_id = room_id;
-		if(room_list == -1){
-			room_list = [];
-		}
+		if(users[socket.id]){
+			var past_room_id = users[socket.id]['room_id'];
+			var new_room_id = room_id;
+			if(room_list == -1){
+				room_list = [];
+			}
 
-		if(past_room_id != new_room_id){
-			if(new_room_id.toString() != "-1"){
-				if(parseInt(past_room_id) > -1){
-					socket.leave(past_room_id);
+			if(past_room_id != new_room_id){
+				if(new_room_id.toString() != "-1"){
+					if(parseInt(past_room_id) > -1){
+						socket.leave(past_room_id);
+					}
+					socket.join(new_room_id);
+					socket.emit('update user', rooms[new_room_id.toString()]);
 				}
-				socket.join(new_room_id);
-				socket.emit('update user', rooms[new_room_id.toString()]);
+				users[socket.id] = {"name" : name, "room_id" : room_id, "room_list" : room_list,  "user_id" : user_id, "img" : img};
+			}
+		}else{
+			if(room_list == -1){
+				room_list = [];
 			}
 			users[socket.id] = {"name" : name, "room_id" : room_id, "room_list" : room_list,  "user_id" : user_id, "img" : img};
+			id_to_socket[user_id.toString()] = socket.id;
+			if(room_id > -1){
+				socket.join(room_id);
+			}
+
+			for(i = 0; i < room_list.length; i++){
+				var subscribe_room = 's_' + room_list[i];
+				socket.join(subscribe_room);
+				if(room_list[i] in rooms){
+					rooms[room_list[i].toString()].push(user_id);
+				}else{
+					rooms[room_list[i].toString()] = new Array(user_id)
+				}
+				io.to(users[socket.id].room_list[i]).emit('update user', rooms[room_list[i]]);
+			}
+			console.log('refresh log-in: ' + name);
+			console.log('socket-id: ' + socket.id);
 		}
-		
-		console.log('update_room: ' + new_room_id);
 	});
 
 	socket.on('chat message', function(msg, tipe, time){
