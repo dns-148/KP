@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> VISUALIZER VIDEO</title>
+	<script src="http://localhost:3003/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+</head>
+<body>
+	<img id="play" style="width: 680px; height: 320px;">
+	<div id="logger"></div>
+	<script>
+		var socket = io();
+		socket.on('stream', function(data,image){
+			var img = document.getElementById("play");
+			img.src = image;
+			$("#logger").text(image); 
+		});
+	</script>
+
+</body>
+</html>

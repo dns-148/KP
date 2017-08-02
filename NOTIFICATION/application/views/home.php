@@ -264,6 +264,7 @@
                   <div class="notify-drop-footer text-center">
                     <a href=""><i class="fa fa-eye"></i> See All </a>
                   </div>
+<<<<<<< HEAD
                 </div>
               </ul>
             </li>
@@ -277,6 +278,25 @@
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
+=======
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp<?php echo $this->session->userdata("email"); ?><span class="caret"></span></a>
+                <ul class="dropdown-menu">
+<<<<<<< HEAD
+=======
+                  <li><a href="<?php echo base_url('profil/edit_profile'); ?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbspEdit Profile</a></li>
+                  <li><a href="<?php echo base_url('user_login/logout'); ?>"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbspLogout</a></li>
+>>>>>>> 23ea398e393ff5abbf7f9550ac09172f9e210be9
+                </ul>
+              </li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+    </div>
+>>>>>>> 42228f97b0d93b907b00549a3beb41be6f55c93e
   </div>
 </div>
 <!-- Modal Popup-->

@@ -7,4 +7,12 @@ class letter extends CI_Controller{
   {
       $this->load->view('surat1.html');
   }
+    public function letter_request2()
+  {
+      $this->load->view('surat2.html');
+  }
+    public function letter_request3()
+  {
+      $this->load->view('surat3.html');
+  }
 }

@@ -21,10 +21,7 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 		if($this->session->userdata('logged_in')){
-			$session_data = $this->session->userdata('logged_in');
-     		$data['username'] = $session_data['username'];
-     		$data['nama'] = $session_data['nama'];
-     		$this->load->view('welcome_message', $data);
+			redirect('chat', 'refresh');
 		}else{
 			redirect('login', 'refresh');
 		}
