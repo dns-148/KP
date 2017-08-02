@@ -189,11 +189,11 @@ function attach_basic(){
 function scroll(unread, count_chat){
 	if(unread && unread > -1){
 		if(unread > 0 && count_chat > 1){
-			var child = $('#chat_' + (count_chat - unread));
-			console.log($('.main_chat:first-child').attr('id'));
-			var p_id = '#' + ($('.main_chat:first-child').attr('id'));
+			var c_id = parseInt($('#last_chat').val()) - unread;
+			c_id = "#chat_" + c_id;
+			var child = $(c_id);
+			var p_id = $('#first_chat').val();
 			var parent = $(p_id);
-			console.log(p_id);
 			var distance =  child.offset().top - parent.offset().top;
 			$('.main').animate({scrollTop: distance}, 'slow');
 		}else{
