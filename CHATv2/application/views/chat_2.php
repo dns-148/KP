@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="<?php echo base_url('asset/css/modified.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Latest compiled JavaScript -->
-    <script src="http://192.168.0.109:3000/socket.io/socket.io.js"></script>
+    <script src="http://192.168.100.15:3000/socket.io/socket.io.js"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.js"></script>
@@ -27,7 +27,7 @@
         var socket;
 
         function join(nama, id, img, room, room_list){
-            window.socket = io('http://192.168.0.109:3000')
+            window.socket = io('http://192.168.100.15:3000')
             window.socket.emit("join", id, nama, room, room_list, img);
         };
 
@@ -65,6 +65,12 @@
         }
 
         function init(){
+            $(document).on("click", ".msg_image", function(){
+                var source = $(this).attr('src');
+                $('#image_modal').attr('src', source);
+                $('#md_imagemodal').modal('show');
+            });
+
             $(document).on("keyup", "#search_room", function(){
                 var input = $('#search_room').val();
                 filter = input.toUpperCase();
@@ -353,10 +359,9 @@
     </div>
     <!-- END of Error -->
     <!-- Modal Image -->
-    <div class="ui modal">
-        <div class="header">Header</div>
-        <div class="image content">
-            <img class="image" id="image_modal">
+    <div class="ui modal" id="md_imagemodal">
+        <div class="image content" style="display: inline-block;">
+            <img class="ui centered image" id="image_modal">
         </div>
     </div>
     <!-- END of Modal Image -->
