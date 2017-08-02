@@ -148,7 +148,7 @@
             </div>
             <input type="hidden" id="send_room" value="<?php echo $room ?>"/>
             <input type="hidden" id="send_user" value="<?php echo ($room > -2? $id : NULL) ?>"/>
-            <input type="hidden" id="send_all_room" value="<?php if($room > -2 ){ $temp = []; foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }; echo json_encode($temp); }else{ echo '';}; ?>"/>
+            <input type="hidden" id="send_all_room" value="<?php if($room > -2 ){ $temp = []; if($allroom_info){foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }}else{$temp = -1;}; echo json_encode($temp); }else{ echo '';}; ?>"/>
             <div class="ui wide inverted right vertical sidebar menu visible" id="bg_groupuser" style="width: 20vw; overflow: hidden;">
                 <div id="user_container">
                     <?php if($room_info){ ?>

@@ -17,6 +17,9 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
 	socket.on('join', function(user_id, name, room_id, room_list, img){
+		if(room_list == -1){
+			room_list = [];
+		}
 		users[socket.id] = {"name" : name, "room_id" : room_id, "room_list" : room_list,  "user_id" : user_id, "img" : img};
 		id_to_socket[user_id.toString()] = socket.id;
 		if(room_id > -1){
@@ -40,6 +43,10 @@ io.on('connection', function(socket){
 	socket.on('update data', function(user_id, name, room_id, room_list, img){
 		var past_room_id = users[socket.id]['room_id'];
 		var new_room_id = room_id;
+		if(room_list == -1){
+			room_list = [];
+		}
+
 		if(past_room_id != new_room_id){
 			if(new_room_id.toString() != "-1"){
 				if(parseInt(past_room_id) > -1){
