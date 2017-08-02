@@ -19,10 +19,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.min.js"></script>
-    <script src="<?php echo base_url('asset/JS/modified.min.js'); ?>"></script>
-    <!-- <script src="<?php echo base_url(); ?>asset/JS/moment.js"></script> -->
-    <!-- <script src="<?php echo base_url(); ?>asset/JS/moment-timezone.js"></script> -->
-    <!-- <script src="<?php echo base_url(); ?>asset/JS/moment-timezone-with-data.js"></script> -->
+    <script src="<?php echo base_url('asset/JS/modified.js'); ?>"></script>
+    <script src="<?php echo base_url(); ?>asset/JS/moment.js"></script>
+    <script src="<?php echo base_url(); ?>asset/JS/moment-timezone.js"></script>
+    <script src="<?php echo base_url(); ?>asset/JS/moment-timezone-with-data.js"></script>
     <script>
         var socket;
         var server_url = "<?php echo base_url('chat/room?room=') ?>";
@@ -390,7 +390,7 @@
                             <textarea class="chat_message"></textarea>
                         </div>
                         <div class="two wide column" id="btn_send" style="padding-left: 0px;">
-                            <button type="submit" class="ui compact icon button" style="height: 5vh; width: 5vh; padding: 1vh;" data-tooltip="Send message" data-inverted="">
+                            <button type="submit" class="ui compact icon button" id="bt_sndmsg" data-tooltip="Send message" data-inverted="">
                               <i class="send icon"></i>
                             </button>
                         </div>

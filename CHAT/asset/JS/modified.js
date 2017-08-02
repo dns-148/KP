@@ -224,13 +224,17 @@ function check_size(){
 			$('#bg_groupuser').css('width','251px');
 		}
 		$('.main').css('height','84vh');
+		$('.chat_message').css('height', '5vh');
+		$('#bt_sndmsg').css('width', '5vh');
+		$('#bt_sndmsg').css('height', '5vh');
 		$('#footer').css('width', 'calc(100% - 2em)');
+		$('#footer').css('height', '8vh');
 		$('#msg_area').removeClass('fourteen wide column');
 		$('#msg_area').addClass('fifteen wide column');
 		$('#btn_send').removeClass('two wide column');
 		$('#btn_send').addClass('one wide column');
 	} else if(window.matchMedia('(min-width: 768px)').matches) {
-		var temp = 'calc(' + window.innerHeight + 'px - (33px + 8vh))';
+		var temp = 'calc(' + window.innerHeight + 'px - 100px)';
 		$('.big_bold').css('font-size','5vw !important;');
 		$('#item_container').prependTo('#sd_chatlist');
 		$('#user_container').prependTo('#bg_groupuser');
@@ -248,13 +252,17 @@ function check_size(){
 			$('#bg_groupuser').css('width','251px');
 		}
 		$('.main').css('height', temp);
+		$('.chat_message').css('height', '35px');
+		$('#bt_sndmsg').css('width', '35px');
+		$('#bt_sndmsg').css('height', '35px');
 		$('#footer').css('width', '100%');
+		$('#footer').css('height', '55px');
 		$('#msg_area').removeClass('fifteen wide column');
 		$('#msg_area').addClass('fourteen wide column');
 		$('#btn_send').removeClass('one wide column');
 		$('#btn_send').addClass('two wide column');
 	}else{
-		var temp = 'calc(' + window.innerHeight + 'px - (33px + 8vh))';
+		var temp = 'calc(' + window.innerHeight + 'px - 90px)';
 		$('.big_bold').css('font-size','5vw !important;');
 		$('#item_container').prependTo('#sd_chatlist');
 		$('#user_container').prependTo('#sd_groupuser');
@@ -266,7 +274,11 @@ function check_size(){
 		$('#main_body').css('width','100vw');
 		$('#main_container').css('width','100vw');
 		$('.main').css('height',temp);
+		$('.chat_message').css('height', '35px');
+		$('#bt_sndmsg').css('width', '35px');
+		$('#bt_sndmsg').css('height', '35px');
 		$('#footer').css('width', '100%');
+		$('#footer').css('height', '45px');
 		$('#msg_area').removeClass('fifteen wide column');
 		$('#msg_area').addClass('fourteen wide column');
 		$('#btn_send').removeClass('one wide column');
@@ -418,7 +430,7 @@ function init(){
 			},
 
 			success: function(data){
-				socket.emit('remove user', true);
+				window.socket.emit('remove user', true);
 			},
 
 			error: function(error){

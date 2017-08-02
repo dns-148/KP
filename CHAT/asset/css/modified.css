@@ -23,6 +23,12 @@ body{
 	overflow-y: auto;
 }
 
+.bt_sndmsg{
+	height: 5vh; 
+	width: 5vh; 
+	padding: 1vh;
+}
+
 .sd_chatlist{
 	overflow: hidden;
 	overflow-x: hidden;
@@ -44,7 +50,7 @@ body{
 }
 
 #sm_topmenu{
-	height: 33px;
+	height: 45px;
 	margin: 0vh;
 }
 

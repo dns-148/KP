@@ -138,7 +138,7 @@
                             <textarea class="chat_message"></textarea>
                         </div>
                         <div class="two wide column" id="btn_send" style="padding-left: 0px;">
-                            <button type="submit" class="ui compact icon button" style="height: 5vh; width: 5vh; padding: 1vh;" data-tooltip="Send message" data-inverted="">
+                            <button type="submit" class="ui compact icon button" id="bt_sndmsg" data-tooltip="Send message" data-inverted="">
                               <i class="send icon"></i>
                             </button>
                         </div>
