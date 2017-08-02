@@ -20,6 +20,10 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('welcome_message');
+		if($this->session->userdata('logged_in')){
+			redirect('chat', 'refresh');
+		}else{
+			redirect('login', 'refresh');
+		}
 	}
 }
