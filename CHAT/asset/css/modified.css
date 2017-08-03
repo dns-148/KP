@@ -1,0 +1,117 @@
+body{
+	width: 100vw !important;
+	overflow: hidden !important;
+}
+
+.main{
+	overflow: hidden;
+	overflow-y: auto;
+	margin-bottom: 1vh; 
+}
+
+.footer{
+	height: 8vh;
+	bottom: 0px;
+}
+
+.chat_message{
+	margin-left: 5%;
+	height: 5vh;
+	width:95%;
+	overflow: hidden;
+	overflow-y: auto;
+}
+
+.bt_sndmsg{
+	height: 5vh; 
+	width: 5vh; 
+	padding: 1vh;
+}
+
+.sd_chatlist{
+	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.mod_receive{
+	background-color: rgba(1, 47, 106, 0.4); 
+	padding: 2vmin;
+}
+
+.mod_send{
+	background-color: rgba(180, 30, 30, 0.4); 
+	padding: 2vmin;
+}
+
+#bg_topmenu{
+	height: 8vh;
+}
+
+#sm_topmenu{
+	height: 45px;
+	margin: 0vh;
+}
+
+.white{
+	background-color: rgba(255, 255, 255, 1) !important; 
+	padding: 2vmin;
+}
+
+.msg_data{
+	white-space: pre-wrap !important;
+	word-wrap: break-word !important;
+}
+
+.led-box {
+  height: 30px;
+  width: 25%;
+  margin: 10px 0;
+  float: left;
+}
+
+.led-blue {
+  margin: 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: #24E0FF;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #006 0 -1px 9px, #3F8CFF 0 2px 14px;
+}
+
+.led-red {
+  margin: 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: #F00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
+}
+
+.msg_data .msg_image{
+	width: 100%;
+    height: auto !important;
+    cursor: pointer;
+}
+
+.msg_data .msg_audio{
+	padding-top: 1vh;
+	width: 100%;
+}
+
+.msg_data .msg_video{
+	width: 100%;
+    height: auto !important;
+}
+
+.inherit_size{
+	font-size: 6em !important;
+}
+
+.hiddened{
+	display: none !important;
+}
+
+.activated{
+	background-color: rgba(1, 47, 106, 0.4) !important; 
+}
