@@ -1,15 +1,17 @@
 var app = require('express')();
 var http = require('http').Server(app);
-var io = require('socket.io')(http)
+var io = require('socket.io')(http);
+var log4js = require('log4js');
 var users = {};
 var rooms = {};
 var id_to_socket ={};
 
-Array.prototype.diff = function (a) {
-    return this.filter(function (i) {
-        return a.indexOf(i) === -1;
-    });
-};
+log4js.configure({
+	appenders: { system: { type: 'file', filename: 'server.log' } },
+	categories: { default: { appenders: ['system'], level: 'info' } }
+});
+
+var logger = log4js.getLogger('server'); 
 
 app.get('/', function(req, res){
 	res.redirect('http://localhost/CHATv2/');
@@ -20,6 +22,7 @@ io.on('connection', function(socket){
 		if(room_list == -1){
 			room_list = [];
 		}
+
 		users[socket.id] = {"name" : name, "room_id" : room_id, "room_list" : room_list,  "user_id" : user_id, "img" : img};
 		id_to_socket[user_id.toString()] = socket.id;
 		if(room_id > -1){
@@ -34,10 +37,11 @@ io.on('connection', function(socket){
 			}else{
 				rooms[room_list[i].toString()] = new Array(user_id)
 			}
-			io.to(users[socket.id].room_list[i]).emit('update user', rooms[room_list[i]]);
+			io.to(users[socket.id].room_list[i].toString()).emit('update user', rooms[room_list[i].toString()]);
 		}
-		console.log('log-in: ' + name);
-		console.log('socket-id: ' + socket.id);
+		logger.info('log-in: ' + name);
+		logger.info('socket-id: ' + socket.id);
+		logger.info('room-participate: ' + room_list);
 	});
 
 	socket.on('update data', function(user_id, name, room_id, room_list, img){
@@ -62,6 +66,7 @@ io.on('connection', function(socket){
 			if(room_list == -1){
 				room_list = [];
 			}
+
 			users[socket.id] = {"name" : name, "room_id" : room_id, "room_list" : room_list,  "user_id" : user_id, "img" : img};
 			id_to_socket[user_id.toString()] = socket.id;
 			if(room_id > -1){
@@ -76,10 +81,10 @@ io.on('connection', function(socket){
 				}else{
 					rooms[room_list[i].toString()] = new Array(user_id)
 				}
-				io.to(users[socket.id].room_list[i]).emit('update user', rooms[room_list[i]]);
+				io.to(users[socket.id].room_list[i].toString()).emit('update user', rooms[room_list[i].toString()]);
 			}
-			console.log('refresh log-in: ' + name);
-			console.log('socket-id: ' + socket.id);
+			logger.info('refresh log-in: ' + name);
+			logger.info('socket-id: ' + socket.id);
 		}
 	});
 
@@ -147,7 +152,7 @@ io.on('connection', function(socket){
 			delete id_to_socket[users[socket.id].user_id];
 		}
 		delete users[socket.id];
-		console.log('disconnect: ' + socket.id);
+		logger.info('disconnect: ' + socket.id);
 	});
 });
 
