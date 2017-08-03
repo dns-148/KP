@@ -15,20 +15,6 @@ CREATE TABLE public."refRoomUser"
         ON DELETE CASCADE
 )
 
-CREATE TABLE public."listFriend"
-(
-    "idUser1" integer NOT NULL,
-    "idUser2" integer NOT NULL,
-    CONSTRAINT "listFriend_pkey" PRIMARY KEY ("idUser1", "idUser2"),
-    CONSTRAINT "refUser1" FOREIGN KEY ("idUser1")
-        REFERENCES public."user" ("ID") MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    CONSTRAINT "refUser2" FOREIGN KEY ("idUser2")
-        REFERENCES public."user" ("ID") MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-)
 
 CREATE TABLE public."listChatRoom"
 (

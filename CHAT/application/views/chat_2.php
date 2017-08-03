@@ -19,7 +19,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.min.js"></script>
-    <script src="<?php echo base_url('asset/JS/modified.js'); ?>"></script>
+    <script src="<?php echo base_url('asset/JS/modified.min.js'); ?>"></script>
     <script src="<?php echo base_url(); ?>asset/JS/moment.js"></script>
     <script src="<?php echo base_url(); ?>asset/JS/moment-timezone.js"></script>
     <script src="<?php echo base_url(); ?>asset/JS/moment-timezone-with-data.js"></script>
