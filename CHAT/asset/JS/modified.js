@@ -16,7 +16,7 @@ function serrorconnect(){
 	$('.md_error').modal({
 		onHidden    : function(){
 			$('#error_header').text('Request Failed');
-			$('#error_content').text('Sorry! There is error occuring, your request cannot be proccesed this time.');
+			$('#error_content').text('Sorry! There is error occuring, your request cannot be proccesed this time. Please, check your internet connection.');
 			$('#error_content2').text('If the error is persistent. Try to contact your administrator.');
 		},
 	}).modal('show');
@@ -25,11 +25,11 @@ function serrorconnect(){
 function serrorreconnect(){
 	$('.modal').modal('hide');
 	$('#error_header').text('Reconnect Failed');
-	$('#error_content').text("Unable to reconnect to chat server, please try to refresh the webpage.");
+	$('#error_content').text("Unable to reconnect to chat server, please try to refresh the webpage after checking your internet connection.");
 	$('.md_error').modal({
 		onHidden    : function(){
 			$('#error_header').text('Request Failed');
-			$('#error_content').text('Sorry! There is error occuring, your request cannot be proccesed this time.');
+			$('#error_content').text('Sorry! There is error occuring, your request cannot be proccesed this time. Please, check your internet connection.');
 			$('#error_content2').text("If the error is persistent. Try to contact your administrator.");
 		},
 	}).modal('show');
@@ -357,6 +357,8 @@ $(window).on('load', check_size);
 $(window).on('resize',check_size);
 
 function init(){	
+	$('.md_loading').modal('setting', 'closable', false);
+
 	$(document).on("click", ".msg_image", function(){
 		var source = $(this).attr('src');
 		$('#image_modal').attr('src', source);
@@ -386,38 +388,52 @@ function init(){
 	});
 
 	$(document).on("click","#sf_send", function(){
-		$('.modal').modal('hide');
-		$('.md_loading').modal('setting', 'closable', false).modal('show');
+		var extension_permited = ['gif','jpg','png','rar','zip','doc','docx','ppt','pptx','xls','xlsx','pdf','txt','mp3','mp4'];
 
 		var fileSelect = document.getElementById('upload_file');
 		var files = fileSelect.files;
-		var formData = new FormData();
-		var file = files[0];            
-		formData.append('file', file, file.name);
-		$.ajax({
-			url: window.uploadfile_url, 
-			dataType: 'JSON', 
-			cache: false,
-			contentType: false,
-			processData: false,
-			data: formData,
-			type: 'POST',
-			success: function(data){
-				if(data){
-					$('#upload_file').val('');
-					$('#form_file')[0].reset();
-					socket.emit('chat message', data.url, data.tipe, data.time);
-					$('.modal').modal('hide');
-				}else{
-					$('.modal').modal('hide');
-					$('.md_errorfile').modal('show');
-				}
-			},
-			error: function(data){
-				$('.modal').modal('hide');
-				$('.md_error').modal('show');
-			}
-		});
+		if(files.length){
+			$('.modal').modal('hide');
+			$('#sf_warn_file').addClass('hiddened');
+			var formData = new FormData();
+			var file = files[0];
+			var success = false;
+			var filename = file.name;
+			var filesize = file.size;
+	        var fileextension = filename.split('.')[filename.split('.').length - 1].toLowerCase(); 
+	        if(extension_permited.includes(fileextension) && filesize <= 10000000){
+	        	$('.md_loading').modal('show');
+	        	formData.append('file', file, file.name);
+				$.ajax({
+					url: window.uploadfile_url, 
+					dataType: 'JSON', 
+					cache: false,
+					contentType: false,
+					processData: false,
+					data: formData,
+					type: 'POST',
+					success: function(data){
+						if(data){
+							$('#upload_file').val('');
+							$('#form_file')[0].reset();
+							window.socket.emit('chat message', data.url, data.tipe, data.time);
+							$('.modal').modal('hide');
+						}else{
+							$('.modal').modal('hide');
+							$('#md_errorfile').modal('show');
+						}
+					},
+					error: function(data){
+						$('.modal').modal('hide');
+						$('.md_error').modal('show');
+					}
+				});
+	        }else{
+	        	$('#md_errorfile').modal('show');
+	        }
+		}else{
+			$('#sf_warn_file').removeClass('hiddened');
+		}
 	});
 
 	$(document).on("click","#nc_button", function(){
@@ -427,14 +443,22 @@ function init(){
 	$(document).on("click",".change_room", function(){
 		var button_id = $(this).attr('id');
 		button_id = button_id.split('_')[1];
-		$('.md_loading').modal('setting', 'closable', false).modal('show');
+		$('.md_loading').modal('show');
 		go_to(button_id);
 	});
 
 	$(document).on("click","#ok_createchat", function(){
 		if($('#cc_chat_name').val() && $('#cc_friend_list').val()) {
+			if(!$('#cc_warn_name').hasClass('hiddened')){
+				$('#cc_warn_name').addClass('hiddened');
+			}
+
+			if(!$('#cc_warn_list').hasClass('hiddened')){
+				$('#cc_warn_list').addClass('hiddened');
+			}
+
 			$('.modal').modal('hide');
-			$('.md_loading').modal('setting', 'closable', false).modal('show');
+			$('.md_loading').modal('show');
 
 			$.ajax({
 				url: window.createchat_url,
@@ -508,8 +532,12 @@ function init(){
 
 	$(document).on("click","#au_add", function(){
 		if($('#au_list').val()) {
+			if(!$('#au_warn_user').hasClass( "hiddened" )){
+				$('#au_warn_user').addClass('hiddened');
+			}
+			
 			$('.modal').modal('hide');
-			$('.md_loading').modal('setting', 'closable', false).modal('show');
+			$('.md_loading').modal('show');
 			$.ajax({
 				url: window.adduser_url,
 				type: 'post',
@@ -568,6 +596,19 @@ function init(){
 				data: data,
 				success: function(time){
 					window.socket.emit('chat message', msg_val, 1, time);
+				}, 
+				error: function(data){
+					$('.modal').modal('hide');
+					$('#error_header').text('Send Chat Failed');
+					$('#error_content').text("Unable to send your chat message, please check your internet connection.");
+					$('#error_content2').text("");
+					$('.md_error').modal({
+						onHidden    : function(){
+							$('#error_header').text('Request Failed');
+							$('#error_content').text('Sorry! There is error occuring, your request cannot be proccesed this time. Please, check your internet connection.');
+							$('#error_content2').text("If the error is persistent. Try to contact your administrator.");
+						},
+					}).modal('show');
 				}
 			});
 		}   

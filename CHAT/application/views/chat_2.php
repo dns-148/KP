@@ -19,7 +19,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.min.js"></script>
-    <script src="<?php echo base_url('asset/JS/modified.min.js'); ?>"></script>
+    <script src="<?php echo base_url('asset/JS/modified.js'); ?>"></script>
     <script src="<?php echo base_url(); ?>asset/JS/moment.js"></script>
     <script src="<?php echo base_url(); ?>asset/JS/moment-timezone.js"></script>
     <script src="<?php echo base_url(); ?>asset/JS/moment-timezone-with-data.js"></script>
@@ -128,14 +128,29 @@
     </script>
 </head>
 <body>
+    <!-- Modal Loading -->
+    <div class="ui basic modal md_loading">
+        <div class="ui icon header">
+            <div class="ui segment" style="background: transparent;">
+                <div class="ui large loader"></div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="ui  center aligned segment" style="background: transparent;">
+                <p>Loading...</p>
+                <p>Processing your request, please wait a moment. Do not refresh the page.</p>
+            </div>
+        </div>
+    </div>
+    <!-- END of Loading -->
     <!-- Modal Error -->
-    <div class="ui basic coupled modal md_error">
+    <div class="ui basic modal md_error">
         <div class="ui icon header">
             <i class="frown icon"></i><text id="error_header">Request Failed</text>
         </div>
         <div class="content">
             <div class="ui center aligned segment" style="background: transparent;">
-                <p id="error_content">Sorry! There is error occuring, your request cannot be proccesed this time.</p>
+                <p id="error_content">Sorry! There is error occuring, your request cannot be proccesed this time. Please, check your internet connection.</p>
                 <p id="error_content2">If the error is persistent. Try to contact your administrator.</p>
                 <div class="actions">
                     <div class="ui blue ok inverted button">
@@ -147,7 +162,7 @@
     </div>
     <!-- END of Error -->
     <!-- Modal Error File -->
-    <div class="ui basic modal md_errorfile">
+    <div class="ui basic modal" id="md_errorfile">
         <div class="ui icon header">
             <i class="warning sign icon"></i>Upload File Failed
         </div>
@@ -178,7 +193,7 @@
     </div>
     <!-- END of Modal Image -->
     <!-- Modal Reconnect -->
-    <div class="ui basic coupled modal md_reconnect">
+    <div class="ui basic modal md_reconnect">
         <div class="ui icon header">
             <div class="ui segment" style="background: transparent;">
                 <div class="ui large loader"></div>
@@ -192,21 +207,6 @@
         </div>
     </div>
     <!-- END of Reconnect -->
-    <!-- Modal Loading -->
-    <div class="ui basic modal md_loading">
-        <div class="ui icon header">
-            <div class="ui segment" style="background: transparent;">
-                <div class="ui large loader"></div>
-            </div>
-        </div>
-        <div class="content">
-            <div class="ui  center aligned segment" style="background: transparent;">
-                <p>Loading...</p>
-                <p>Processing your request, please wait a moment. Do not refresh the page.</p>
-            </div>
-        </div>
-    </div>
-    <!-- END of Loading -->
     <!-- Modal Upload -->
     <div class="ui modal md_sendfile">
         <div class="header">Send file to chat</div>
@@ -403,7 +403,6 @@
                             <div class="menu">
                                 <div class="item" id="sd_clbutton">List Chat</div>
                                 <div class="item" id="sd_gubutton">List User</div>
-                                <div class="item bt_sendfile">Send File</div>
                             </div>
                         </div>
                     </div>

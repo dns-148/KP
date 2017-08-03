@@ -74,7 +74,7 @@
                     <div class="hiddened" id="list_chat" value="<?php echo ($list_chat? $list_chat[count($list_chat) - 1]['idChat'] : '') ?>"></div>
                     <?php 
                         if($room_info){
-                            echo '<a class="brand item" id="grouproom_name" value="'.$room_info['nama_room'].'"><img class="ui avatar image" id="grouproom_image" value="'.$room_info['room_pict'].'" src="'.base_url('pro_pict/').$room_info['room_pict'].'"> &nbsp;&nbsp;&nbsp;'.$room_info['nama_room'].'</a><div class="right menu"><a class="item bt_sendfile"><i class="attach icon"></i> Send File</a></div>';
+                            echo '<a class="brand item" id="grouproom_name" value="'.$room_info['nama_room'].'"><img class="ui avatar image" id="grouproom_image" value="'.$room_info['room_pict'].'" src="'.base_url('pro_pict/').$room_info['room_pict'].'"> &nbsp;&nbsp;&nbsp;'.$room_info['nama_room'].'</a><div class="right menu">'.( $room > -1 ? '<a class="item bt_sendfile"><i class="attach icon"></i> Send File</a>.' : '').'</div>';
                         }; 
                     ?>
                 </div>
@@ -90,7 +90,11 @@
                             <div class="menu">
                                 <div class="item" id="sd_clbutton">List Chat</div>
                                 <div class="item" id="sd_gubutton">List User</div>
-                                <div class="item bt_sendfile">Send File</div>
+                                <?php 
+                                    if($room > -1){ 
+                                        echo '<div class="item bt_sendfile">Send File</div>';
+                                    };
+                                ?>
                             </div>
                         </div>
                     </div>
