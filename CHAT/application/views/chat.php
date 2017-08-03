@@ -101,7 +101,6 @@
                             <?php
                                 $user_tz = new DateTimeZone($timezone);
                                 if($list_chat){
-                                    echo '<input type="hidden" id="first_chat" value="#chat_'.$list_chat[0]["idChat"].'"/>';
                                     echo '<input type="hidden" id="last_chat" value="'.$list_chat[count($list_chat) - 1]["idChat"].'"/>';
                                     foreach ($list_chat as $row) {
                                         $past_timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $row['time']);

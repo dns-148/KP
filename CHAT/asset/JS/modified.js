@@ -203,7 +203,7 @@ function receivemessage(sender_id, id, who, msg, time, img_url, tipe){
 
 function scrolltobottom(){
 	var distance = $('.main')[0].scrollHeight;
-	$('.main').animate({scrollTop: distance}, 'slow');
+	$('.main').animate({scrollTop: distance}, 'medium');
 }
 
 function attach_basic(){
@@ -231,10 +231,8 @@ function scroll(unread, count_chat){
 			var c_id = parseInt($('#last_chat').val()) - unread;
 			c_id = "#chat_" + c_id;
 			var child = $(c_id);
-			var p_id = $('#first_chat').val();
-			var parent = $(p_id);
-			var distance =  child.offset().top - parent.offset().top;
-			$('.main').animate({scrollTop: distance}, 'slow');
+			var distance =  child.offset().top;
+			$('.main').animate({scrollTop: distance}, 'fast');
 		}else{
 			scrolltobottom();
 		}
