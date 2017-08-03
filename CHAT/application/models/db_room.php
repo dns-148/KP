@@ -50,6 +50,7 @@ Class db_room extends CI_Model{
 		$this->db->from('public.refRoomUser');
 		$this->db->join('public.user', 'ID = idUser', 'left');
 		$this->db->where('idChatRoom', $room_id);
+		$this->db->where('Status', "Aktif");
  
 		$query = $this->db->get();
 		$result = $query->result_array();

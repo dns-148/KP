@@ -22,7 +22,8 @@ class user_auth extends CI_Controller {
 	 	$email = $this->input->post('email');
 	 	$timezone = $this->input->post('timezone');
 	 	$result = $this->db_user->login($email, $password);
-	 	if($result){
+	 	$check_status = $this->db_user->check_status($email);
+	 	if($result && $check_status){
 	 		$sess_array = array();
 
 			$sess_array = array(

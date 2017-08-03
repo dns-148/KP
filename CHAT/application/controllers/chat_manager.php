@@ -85,7 +85,7 @@ class chat_manager extends CI_Controller {
 
 		if (!$this->upload->do_upload('file')){
 			 $error = array('error' => $this->upload->display_errors());
-			 echo json_encode(NULL);
+			 echo json_encode(false);
 		}else{
 			$upload_data = $this->upload->data();
 			$file_name = $upload_data['file_name'];

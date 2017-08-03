@@ -1,6 +1,21 @@
 <?php
 
 Class db_user extends CI_Model{
+	function check_status($email){
+		$this->db->select('*');
+	    $this->db->from('public.user');
+	    $this->db->where('Email', $email);
+		$this->db->where('Status', "Aktif");
+		$query = $this->db->get();
+	 
+		if($query->num_rows() == 1)
+		{
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	function login($email, $password){
 	    $this->db->select('ID, Nama, ProfilePict');
 	    $this->db->from('public.user');
@@ -22,6 +37,7 @@ Class db_user extends CI_Model{
 		$this->db->select('ID, Nama, ProfilePict');
 		$this->db->from('public.user');
 		$this->db->where('ID !=', $id);
+		$this->db->where('Status', "Aktif");
  
 		$query = $this->db->get();
 	 
@@ -94,21 +110,6 @@ Class db_user extends CI_Model{
 			return false;
 		}
 		
-	}
-
-	function friendList($id_user){
-		$this->db->select('idUser1, idUser2');
-		$this->db->from('public.listFriend');
-		$this->db->where('idUser1', $id_user);
-		$this->db->or_where('idUser2', $id_user);
-		
-		$query = $this->db->get();
-		if($query->num_rows() > 0)
-		{
-			return $query->result();
-		}else{
-			return false;
-		}
 	}
 }
 ?>
