@@ -35,7 +35,7 @@ class Karyawan extends CI_Model {
   }
 
   public function get_id($id_karyawan){
-		return $this->db->query("SELECT id_karyawan, nama, jenis_kelamin FROM myschema.karyawan WHERE id_karyawan='$id_karyawan'")->result();
+		return $this->db->query("SELECT nama, jenis_kelamin FROM myschema.karyawan WHERE id_karyawan='$id_karyawan'")->result();
 	}
 
 }

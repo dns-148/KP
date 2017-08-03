@@ -5,14 +5,17 @@ class notif_request extends CI_Controller {
 
   public function index()
   {
+    $id_post = $this->session->userdata("id_karyawan");
     $data['notif_birthday'] = $this->Karyawan->showBirthdayRequest();
     $data['notif_event'] = $this->Kalender->showEventRequest();
-    $data['notif_greeting'] = $this->Ucapan->showGreetingRequest();
+    $data['notif_greeting'] = $this->Ucapan->showGreetingRequest($id_post);
     $this->load->view('home', $data);
   }
 
   public function countNotif() {
-    $data = $this->Kalender->getEventRequest();
-    echo $data;
+    $id_karyawan = $this->session->userdata("id_karyawan");
+    $a = $this->Kalender->getComment($id_karyawan);
+    $b = $this->Kalender->getEventRequest();
+    echo $a+$b;
   }
 }

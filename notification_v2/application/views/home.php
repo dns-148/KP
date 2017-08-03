@@ -198,14 +198,36 @@
                         else {
                           $strip = 'strip2';
                         }
-                        echo'<li>
-                        <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="';echo base_url('assets/images/gift.png'); echo '"></div></div>
-                        <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
-                        <a href="';echo base_url('birthday/load_birthday?id='); echo $row->id_karyawan; echo '" class=\"'.$strip.'\">'.$row->nama.' is birthday today!</a>
-                        <hr>
-                        <p>';echo date('D, d M Y');'</p>
-                        </div>
-                        </li>';
+                        $id_get = $row->id_karyawan;
+                        $id_session = $this->session->userdata("id_karyawan");
+                        if($id_get == $id_session){
+                          echo'<li>
+                          <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="';echo base_url('assets/images/gift.png'); echo '"></div></div>
+                          <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
+                          <a href="';echo base_url('birthday/load_birthday?id='); echo $row->id_karyawan; echo '" class=\"'.$strip.'\">Happy birthday '.$row->nama.'!</a>
+                          <hr>
+                          <div>
+                            <span>
+                              <abbr>';echo date('D, d M Y');'</abbr>
+                            </span>
+                          </div>
+                          </div>
+                          </li>';
+                        }
+                        elseif ($id_get != $id_session) {
+                          echo'<li>
+                          <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="';echo base_url('assets/images/gift.png'); echo '"></div></div>
+                          <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
+                          <a href="';echo base_url('birthday/load_birthday?id='); echo $row->id_karyawan; echo '" class=\"'.$strip.'\">'.$row->nama.' is birthday today!</a>
+                          <hr>
+                          <div>
+                            <span>
+                              <abbr>';echo date('D, d M Y');'</abbr>
+                            </span>
+                          </div>
+                          </div>
+                          </li>';
+                        }
                       }
                     }
 
@@ -225,27 +247,35 @@
                       <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
                       <a href=\"#\" class=\"'.$strip.'\">Today is '.$row->nama_event.'</a>
                       <hr>
-                      <p class="time">Today</p>
+                      <div>
+                        <span>
+                          <abbr>';echo date('D, d M Y');'</abbr>
+                        </span>
+                      </div>
                       </div>
                       </li>';
                     }
 
-                    if($notif_greeting != NULL)
+                    if($notif_greeting != NULL )
                     {
                       foreach ($notif_greeting as $row) {
                         $no++;
-                        if($no % 2 == 0) {
-                          $strip = 'strip1';
-                        }
-                        else {
-                          $strip = 'strip2';
-                        }
+                           if($no % 2 == 0) {
+                             $strip = 'strip1';
+                           }
+                           else {
+                             $strip = 'strip2';
+                           }
                         echo'<li>
                         <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="';echo base_url('assets/images/comments.png'); echo '"></div></div>
                         <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
-                        <a href="" class=\"'.$strip.'\">'.$row->nama.' is giving a wishes!</a>
+                        <a href="';echo base_url('birthday/load_birthday?id='); echo '" class=\"'.$strip.'\">'.$row->nama.' is sending you a wish</a>
                         <hr>
-                        <p class="time">Today</p>
+                        <div>
+                          <span>
+                            <abbr>Today at ';echo date('H:i A', strtotime($row->waktu));'</abbr>
+                          </span>
+                        </div>
                         </div>
                         </li>';
                       }
@@ -261,9 +291,6 @@
                     }
                     ?>
                   </div>
-                  <div class="notify-drop-footer text-center">
-                    <a href=""><i class="fa fa-eye"></i> See All </a>
-                  </div>
                 </div>
               </ul>
             </li>
@@ -275,7 +302,7 @@
             </li>
           </ul>
         </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
+      </div><!-- /.row -->
     </nav>
   </div>
 </div>

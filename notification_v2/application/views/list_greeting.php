@@ -174,7 +174,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" onclick=" " id="birthday">
-                Notifications <span class="badge pull-right" id="badge_birthday"></span>
+                Notifications <span class="badge pull-right" id="badge_notif"></span>
               </a>
               <ul class="dropdown-menu notify-drop">
                 <div class="notify-drop-title">
@@ -198,14 +198,36 @@
                         else {
                           $strip = 'strip2';
                         }
-                        echo'<li>
-                        <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="';echo base_url('assets/images/gift.png'); echo '"></div></div>
-                        <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
-                        <a href="';echo base_url('birthday/load_birthday?id='); echo $row->id_karyawan; echo '" class=\"'.$strip.'\">'.$row->nama.' is birthday today!</a>
-                        <hr>
-                        <p>';echo date('D, d M Y');'</p>
-                        </div>
-                        </li>';
+                        $id_get = $row->id_karyawan;
+                        $id_session = $this->session->userdata("id_karyawan");
+                        if($id_get == $id_session){
+                          echo'<li>
+                          <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="';echo base_url('assets/images/gift.png'); echo '"></div></div>
+                          <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
+                          <a href="';echo base_url('birthday/load_birthday?id='); echo $row->id_karyawan; echo '" class=\"'.$strip.'\">Happy birthday '.$row->nama.'!</a>
+                          <hr>
+                          <div>
+                            <span>
+                              <abbr>';echo date('D, d M Y');'</abbr>
+                            </span>
+                          </div>
+                          </div>
+                          </li>';
+                        }
+                        elseif ($id_get != $id_session) {
+                          echo'<li>
+                          <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="';echo base_url('assets/images/gift.png'); echo '"></div></div>
+                          <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
+                          <a href="';echo base_url('birthday/load_birthday?id='); echo $row->id_karyawan; echo '" class=\"'.$strip.'\">'.$row->nama.' is birthday today!</a>
+                          <hr>
+                          <div>
+                            <span>
+                              <abbr>';echo date('D, d M Y');'</abbr>
+                            </span>
+                          </div>
+                          </div>
+                          </li>';
+                        }
                       }
                     }
 
@@ -225,27 +247,35 @@
                       <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
                       <a href=\"#\" class=\"'.$strip.'\">Today is '.$row->nama_event.'</a>
                       <hr>
-                      <p class="time">Today</p>
+                      <div>
+                        <span>
+                          <abbr>';echo date('D, d M Y');'</abbr>
+                        </span>
+                      </div>
                       </div>
                       </li>';
                     }
 
-                    if($notif_greeting != NULL)
+                    if($notif_greeting != NULL )
                     {
                       foreach ($notif_greeting as $row) {
                         $no++;
-                        if($no % 2 == 0) {
-                          $strip = 'strip1';
-                        }
-                        else {
-                          $strip = 'strip2';
-                        }
+                           if($no % 2 == 0) {
+                             $strip = 'strip1';
+                           }
+                           else {
+                             $strip = 'strip2';
+                           }
                         echo'<li>
                         <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="';echo base_url('assets/images/comments.png'); echo '"></div></div>
                         <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
-                        <a href=\"#\" class=\"'.$strip.'\">'.$row->nama.' is giving a wishes!</a>
+                        <a href="';echo base_url('birthday/load_birthday?id='); echo '" class=\"'.$strip.'\">'.$row->nama.' is sending you a wish</a>
                         <hr>
-                        <p class="time">Today</p>
+                        <div>
+                          <span>
+                            <abbr>Today at ';echo date('H:i A', strtotime($row->waktu));'</abbr>
+                          </span>
+                        </div>
                         </div>
                         </li>';
                       }
@@ -260,9 +290,6 @@
                       </li>';
                     }
                     ?>
-                  </div>
-                  <div class="notify-drop-footer text-center">
-                    <a href=""><i class="fa fa-eye"></i> See All </a>
                   </div>
                 </div>
               </ul>
@@ -330,13 +357,13 @@
                     if(count($list_ucapan) > 0)
                     {
                       foreach ($list_ucapan as $row) {
-                        echo "<li class='comment'>";
+                        echo "<li class='comment'>
+                        <a class='pull-left' style='margin-left:9px; margin-right:9px;'>";
                         $gender = $row->jenis_kelamin;
                         if($gender == 'Perempuan') {
-                          echo "<img src='";
+                          echo "<img class='img-circle avatar' src='";
                           echo base_url('assets/images/user_2.jpg'); echo "'";
                           echo "class='";
-                          echo "img-circle avatar"; echo "'";
                           echo"alt='";
                           echo "avatar"; echo "'";
                           echo ">";
@@ -350,49 +377,20 @@
                           echo "avatar"; echo "'";
                           echo ">";
                         }
-                        echo "<div class='comment-body'>
+                        echo "</a>";
+                        echo "<div class='comment-body' style='margin-left:10px;'>
                               <div class='comment-heading'>
                               <h4 class='user'>$row->nama</h4>";
-                        echo "<h5 class='";
-                        echo "time'";
-                        echo ">";
-
                         $date = date('H:i A', strtotime($row->waktu));
-                        echo $date;
-                        echo "</h5>";
+                        echo "<h5 class='time'>";
+                        echo $date; echo "</h5>";
                         echo "</div>
                               <p>$row->isi_ucapan</p>
                               </div>
-                              </li>";
+                        </li>";
                       }
                     }?>
               </ul>
-                      <!-- <ul class="comments-list">
-                          <li class="comment">
-                              <a class="pull-left" href="#">
-                                  <img class="avatar" src="http://bootdey.com/img/Content/user_3.jpg" alt="avatar">
-                              </a>
-                              <div class="comment-body">
-                                  <div class="comment-heading">
-                                      <h4 class="user">Afiif Naufal</h4>
-                                      <h5 class="time">3 minutes ago</h5>
-                                  </div>
-                                  <p>Emang mbak hitz!</p>
-                              </div>
-                          </li>
-                          <li class="comment">
-                              <a class="pull-left" href="#">
-                                  <img class="avatar" src="http://bootdey.com/img/Content/user_2.jpg" alt="avatar">
-                              </a>
-                              <div class="comment-body">
-                                  <div class="comment-heading">
-                                      <h4 class="user">Ivaldy Putra</h4>
-                                      <h5 class="time">3 minutes ago</h5>
-                                  </div>
-                                  <p>Recehnya tolong dikurangin yaa</p>
-                              </div>
-                          </li>
-                      </ul> -->
             </div>
         </div>
     </div>
@@ -418,7 +416,7 @@ function ajax_refreshEventCounts()
     url: "<?php echo site_url('notif_request/countNotif')?>",
     type: 'POST',
     success: function(data) {
-      $('#badge_birthday').html(data);
+      $('#badge_notif').html(data);
       timer = setTimeOut("ajax_refreshEventCounts()", 5000);
     }
   });

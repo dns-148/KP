@@ -20,13 +20,10 @@ class Ucapan extends CI_Model {
     return $query->result();
   }
 
-  public function showGreetingRequest() {
-    $querylineCount = "SELECT * FROM myschema.ucapan, myschema.karyawan WHERE id_karyawan=created_by AND TO_CHAR(waktu, '%mm-%dd-%yyyy') = TO_CHAR(NOW(), '%mm-%dd-%yyyy')";
+  public function showGreetingRequest($id_post) {
+    $querylineCount = "SELECT * FROM myschema.karyawan, myschema.ucapan  WHERE id_karyawan=created_by AND TO_CHAR(waktu,'%mm-%dd-%yyyy') = TO_CHAR(NOW(), '%mm-%dd-%yyyy') AND id_ultah=$id_post
+    AND (id_ultah <> created_by) order by waktu DESC";
     $query = $this->db->query($querylineCount);
-
-    if ($query->num_rows() > 0) {
-      return $query->result();
-    }
+    return $query->result();
   }
-
 }
