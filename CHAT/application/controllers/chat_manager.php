@@ -68,12 +68,52 @@ class chat_manager extends CI_Controller {
 		echo json_encode($return_val);
 	}
 
-	public function leave_chat(){
-		$room_id = $this->input->post('room');
-		$user_id = $this->input->post('user_id');
+	public function kick_user(){
+		$session_data = $this->session->userdata('logged_in');
+		$room_id = (int) $session_data['room'];
+		$user_id = $this->input->post('id');
 		$this->db_room->leaveRoom($room_id, $user_id);
+		$result = $this->db_user->userData($user_id);
+		$return_val = array(
+			'room' => $room_id,
+			'id' => $user_id,
+			'nama' => $result[0]->Nama,
+			'profile_pict' => $result[0]->ProfilePict
+		);
+		echo json_encode($return_val);
+	}
 
-		echo json_encode(true);
+	public function leave_chat(){
+		$session_data = $this->session->userdata('logged_in');
+		$room_id = (int) $session_data['room'];
+		$user_id = $session_data['id'];
+		$this->db_room->leaveRoom($room_id, $user_id);
+		$id_admin = $this->db_room->getAdmin($room_id);
+		$user_id = (int)$user_id;
+		$id_admin = (int)$id_admin;
+
+		if($id_admin == $user_id){
+			$nextAdmin = $this->db_room->nextAdminCandidate($room_id);
+			if($nextAdmin){
+				$this->db_room->changeAdmin($room_id, $nextAdmin);
+				echo json_encode($nextAdmin);
+			}else{
+				$group_name = $this->input->post('group_name');
+				$this->db_room->setUnused($room_id, $group_name);
+				echo json_encode(false);
+			}
+		}else{
+			echo json_encode(false);
+		}
+	}
+
+	public function change_admin(){
+		$session_data = $this->session->userdata('logged_in');
+		$room_id = $session_data['room'];
+		$user_id = $this->input->post('user_id');
+
+		$this->db_room->changeAdmin($room_id, $user_id);
+		echo json_encode($user_id);
 	}
 
 	public function upload_file(){

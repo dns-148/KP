@@ -157,13 +157,14 @@
             <div class="ui wide inverted right vertical sidebar menu visible" id="bg_groupuser" style="width: 20vw; overflow: hidden;">
                 <div id="user_container" style="overflow:hidden;">
                     <?php if($room_info){ ?>
-                    <div class="item">
-                        <div class="ui animated fade button" tabindex="0" id="au_button">
+                    <div class="item user_menu">
+                        <div class="ui animated fade button <?php echo ($room_info['id_admin'] != $id ? 'hiddened' : '')?>" tabindex="0" id="au_button">
                             <div class="visible content">Add User</div>
                             <div class="hidden content">
                                 <i class="add user icon"></i>
                             </div>
                         </div>
+                        <?php echo ($room_info['id_admin'] != $id ? '<div style="height: 33px; width: 5px; display: inline-block;" id="heightener"></div>' : '')?>
                         <div class="ui animated fade button right floated" tabindex="0" id="lg_button">
                             <div class="visible content">Leave Chat</div>
                             <div class="hidden content">
@@ -172,12 +173,20 @@
                         </div>
                     </div>
                     <?php }; ?>
-                    <div class="item"><div class="center big_bold">User in group: </div></div>
+                    <div class="item">
+                        <div class="center big_bold">User in group: </div>
+                    </div>
                     <div id="list_user" style="overflow-x: hidden; overflow-y: auto; height: calc(100vh - 102px)">
-                    <?php
+                        <?php
                         if($user_participate){
                             foreach ($user_participate as $row) {
-                                echo '<div class="item" id="user_'.$row['ID'].'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="'.base_url('pro_pict/').$row['ProfilePict'].'"></a></div><div class="nine wide column"><a class="author">'.$row['Nama'].'</a><div class="text status" id="status_'.$row['ID'].'">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_'.$row['ID'].'"></div></div></div></div></div></div></div></div>';
+                                if($room_info['id_admin'] == $id){
+                                    $temp_placer = '<div class="button_placer"><button class="mini ui red button bt_uremoved" id="uremoved_'.$row['ID'].'"><i class="remove user icon"></i>Remove</button><button class="mini ui blue button right floated bt_changeadmin" id="cadmin_'.$row['ID'].'">Change Admin</button></div>';
+                                }else{
+                                    $temp_placer = '';
+                                }
+
+                                echo '<div class="item" id="user_'.$row['ID'].'"><div class="ui comments white comment_area">'.($room_info['id_admin'] != $row['ID'] ? $temp_placer : '').'<div class="comment" id="comment_'.$row['ID'].'"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="'.base_url('pro_pict/').$row['ProfilePict'].'"></a></div><div class="nine wide column"><a class="author">'.$row['Nama'].'</a><div class="text status" id="status_'.$row['ID'].'">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_'.$row['ID'].'"></div></div></div></div></div>'.($room_info['id_admin'] == $row['ID'] ? '<div class="ui blue bottom left ribbon label" style=" font-size:12.5px;" id="admin"><i class="star icon"></i>Chat Administrator</div>':'').'</div></div></div>';
                             }
                         }
                     ?>

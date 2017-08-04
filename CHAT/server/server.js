@@ -39,9 +39,8 @@ io.on('connection', function(socket){
 			}
 			io.to(users[socket.id].room_list[i].toString()).emit('update user', rooms[room_list[i].toString()]);
 		}
-		logger.info('log-in: ' + name);
-		logger.info('socket-id: ' + socket.id);
-		logger.info('room-participate: ' + room_list);
+		logger.info('Log-in: ' + name + ' with socket-id: ' + socket.id);
+		logger.info('User room-participate: ' + room_list);
 	});
 
 	socket.on('update data', function(user_id, name, room_id, room_list, img){
@@ -61,6 +60,8 @@ io.on('connection', function(socket){
 					socket.emit('update user', rooms[new_room_id.toString()]);
 				}
 				users[socket.id] = {"name" : name, "room_id" : room_id, "room_list" : room_list,  "user_id" : user_id, "img" : img};
+			}else{
+				socket.emit('update user', rooms[new_room_id.toString()]);
 			}
 		}else{
 			if(room_list == -1){
@@ -83,8 +84,7 @@ io.on('connection', function(socket){
 				}
 				io.to(users[socket.id].room_list[i].toString()).emit('update user', rooms[room_list[i].toString()]);
 			}
-			logger.info('refresh log-in: ' + name);
-			logger.info('socket-id: ' + socket.id);
+			logger.info('Refresh log-in: ' + name + 'with socket-id: ' + socket.id);
 		}
 	});
 
@@ -106,6 +106,26 @@ io.on('connection', function(socket){
 		}
 	});
 
+	socket.on('kick user', function(room_name, room_id, user_id, name, img){
+		socket_id = id_to_socket[user_id.toString()];
+		if(users[socket_id]){
+			let rsocket = io.sockets.connected[socket_id];
+			var room = users[socket_id].room_id;
+			index = rooms[room_id.toString()].indexOf(users[socket_id].user_id);
+			if(index > -1){
+				rooms[room_id.toString()].splice(index, 1);
+			}
+			var subscribe_room = 's_' + room_id;
+			rsocket.leave(subscribe_room);
+			if(parseInt(room_id) == parseInt(room)){
+				rsocket.leave(room.toString());
+			}
+			io.sockets.connected[socket_id].emit('kicked', room_name, room_id);
+		}
+		io.to(room_id.toString()).emit('remove user', user_id, name, img);
+		logger.info('Remove user id: '+ user_id +' by Admin id: ' + users[socket.id].user_id + ' from room: ' + room_id);
+	});
+
 	socket.on('remove user', function(status){
 		var room = users[socket.id].room_id;
 		index = rooms[room.toString()].indexOf(users[socket.id].user_id);
@@ -117,6 +137,7 @@ io.on('connection', function(socket){
 		socket.leave(room.toString());
 		socket.emit('removed', true);
 		socket.broadcast.to(room.toString()).emit('remove user', users[socket.id].user_id, users[socket.id].name, users[socket.id].img);
+		logger.info('Leave chat, id: ' + users[socket.id].user_id + ' from room: ' + room);
 	});
 
 	socket.on('add chat', function(name, image, room, list){
@@ -127,6 +148,11 @@ io.on('connection', function(socket){
 				io.sockets.connected[socket_id].emit('add chat', name, image, room);
 			}
 		}
+	});
+
+	socket.on('change admin', function(room, id_user, prev_admin){
+		logger.info('Admin change in room: ' + room + '. From: ' + prev_admin + ", to: "+ id_user);
+		socket.broadcast.to(room.toString()).emit('change admin', id_user);
 	});
 
 	socket.on('join chat', function(room, user_id){
@@ -152,7 +178,7 @@ io.on('connection', function(socket){
 			delete id_to_socket[users[socket.id].user_id];
 		}
 		delete users[socket.id];
-		logger.info('disconnect: ' + socket.id);
+		logger.info('Disconnect: ' + socket.id);
 	});
 });
 

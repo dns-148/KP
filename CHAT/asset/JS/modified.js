@@ -59,7 +59,7 @@ function go_to(room){
 			check_size();
 			attach_basic();
 			scroll($('#unread').attr('value'), $('#list_chat').attr('value'));
-			$('.modal').modal('hide');
+			$('#modal_loading').modal('hide');
 		}
 	});
 }
@@ -86,7 +86,7 @@ function cc_cancel(){
 function au_add(response, server_url){
 	for(i = 0; i < response.length; i++){
 		var id_removed = '#friend_' + response[i]['id'];
-		var new_user = '<div class="item" id="user_' + response[i]['id'] +'"><div class="ui comments white"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="' + server_url + response[i]['profile_pict'] + '"></a></div><div class="nine wide column"><a class="author">' + response[i]['nama'] + '</a><div class="text status" id="status_' + response[i]['id'] + '">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_' + response[i]['id'] + '"></div></div></div></div></div></div></div></div>';
+		var new_user = '<div class="item" id="user_' + response[i]['id'] +'"><div class="ui comments white comment_area"><div class="comment"><div class="content"><div class="ui grid"><div class="three wide column"><a class="avatar"><img src="' + server_url + response[i]['profile_pict'] + '"></a></div><div class="nine wide column"><a class="author">' + response[i]['nama'] + '</a><div class="text status" id="status_' + response[i]['id'] + '">Offline</div></div><div class="three wide column"><div class="led-box"><div class="led-red" id="ledlamp_' + response[i]['id'] + '"></div></div></div></div></div></div></div></div>';
 		$('#list_user').append(new_user);
 		$(id_removed).remove();
 	}
@@ -171,6 +171,44 @@ function newmessage(msg, time, room, room_id, basic_url, tipe){
 	}
 }
 
+function handleremove(name,	id){
+	$('.modal').modal('hide');
+	var full_text = 'Removed from "' + name + '"'; 
+	$('#header_userremoved').text(full_text);
+	$('#header_userremoved').prepend('<i class="warning sign icon"></i>');
+	$('#ur_ok').attr('value', id);
+	$('#md_userremoved').modal('setting', 'closable', false).modal('show');
+}
+
+function changeadmin(next_id){
+	var user_id = parseInt($('#send_user').val());
+	var id_element = "#comment_" + next_id;
+	var temp_placer;
+	var child_div;
+	var div_id;
+	var id_number;
+
+	if(next_id == user_id){
+		$('.md_loading').modal('show');
+		$('#heightener').remove();
+		$('#au_button').removeClass('hiddened');
+		$('#admin').appendTo(id_element);
+		$('#list_user').children('.item').each(function() {
+			div_id = $(this).attr('id');
+			id_number = parseInt(div_id.split('_')[1]);
+			if(id_number != user_id){
+				child_div = $(this).find('.comment_area');
+				temp_placer = '<div class="button_placer"><button class="mini ui red button bt_uremoved" id="uremoved_' + id_number + '"><i class="remove user icon"></i>Remove</button><button class="mini ui blue button right floated bt_changeadmin" id="cadmin_' + id_number + '">Change Admin</button></div>';
+				child_div.prepend(temp_placer);
+			}
+		});
+		$('#admin').appendTo(id_element);
+		$('.md_loading').modal('hide');
+	}else{
+		$('#admin').appendTo(id_element);
+	}
+}
+
 function receivemessage(sender_id, id, who, msg, time, img_url, tipe){
 	var description;
 	if(sender_id == id){
@@ -246,10 +284,13 @@ $("#menu-toggle").click(function(e) {
 
 function check_size(){
 	var is_iPad = navigator.userAgent.match(/iPad/i) != null;
+	var is_msie = navigator.userAgent.match(/Trident/i) != null; 
+	var is_mozilla = navigator.userAgent.match(/firefox/i) != null; 
 	if (window.matchMedia('(min-width: 1024px)').matches && !is_iPad) {
 		var t_height = window.innerHeight + 'px';
 		var temp2 = (window.innerHeight - 102) + 'px';
 		var temp3 = (window.innerHeight - 186) + 'px';
+		$('#admin').css({'margin-left': '0px', 'margin-bottom': '0px'});
 		$('#body_page').css('height', t_height);
 		$('#irp').css('height', temp3);
 		$('#list_user').css('height', temp2);
@@ -262,12 +303,12 @@ function check_size(){
 		$('#bg_topmenu').removeClass('hiddened');
 		$('#sm_topmenu').addClass('hiddened');
 		$('#main_body').css('width','calc(100vw - 350px)');
-		if($(window).width() > 1250){
+		if($(window).width() > 1250 && !is_mozilla && !is_msie){
 			$('#main_container').css('width','calc(80vw - 350px)');
 			$('#bg_groupuser').css('width','20vw');
 		}else{
-			$('#main_container').css('width','calc(100vw - 601px)');
-			$('#bg_groupuser').css('width','251px');
+			$('#main_container').css('width','calc(100vw - 630px)');
+			$('#bg_groupuser').css('width','280px');
 		}
 		$('.main').css('height','84vh');
 		$('.chat_message').css('height', '5vh');
@@ -286,6 +327,7 @@ function check_size(){
 		var temp2 = (window.innerHeight - 102) + 'px';
 		var temp = 'calc(' + t_height + ' - 100px)';
 		var temp3 = (window.innerHeight - 186) + 'px';
+		$('#admin').css({'margin-left': '0px', 'margin-bottom': '0px'});
 		$('#body_page').css('height', t_height);
 		$('#irp').css('height', temp3);
 		$('#list_user').css('height', temp2);
@@ -298,12 +340,12 @@ function check_size(){
 		$('#sm_topmenu').removeClass('hiddened');
 		$('#bg_topmenu').addClass('hiddened');
 		$('#main_body').css('width','100vw');
-		if($(window).width() > 833){
+		if($(window).width() > 850){
 			$('#main_container').css('width','70vw');
 			$('#bg_groupuser').css('width','30vw');
 		}else{
-			$('#main_container').css('width','calc(100vw - 251px)');
-			$('#bg_groupuser').css('width','251px');
+			$('#main_container').css('width','calc(100vw - 280px)');
+			$('#bg_groupuser').css('width','280px');
 		}
 		$('.main').css('height', temp);
 		$('.chat_message').css('height', '35px');
@@ -322,6 +364,7 @@ function check_size(){
 		var temp2 = (window.innerHeight - 102) + 'px';
 		var temp = 'calc(' + window.innerHeight + 'px - 90px)';
 		var temp3 = (window.innerHeight - 186) + 'px';
+		$('#admin').css({'margin-left': '7px', 'margin-bottom': '6px'});
 		$('#body_page').css('height', t_height);
 		$('#irp').css('height', temp3);
 		$('#list_user').css('height', temp2);
@@ -357,12 +400,98 @@ $(window).on('load', check_size);
 $(window).on('resize',check_size);
 
 function init(){	
-	$('.md_loading').modal('setting', 'closable', false);
+
+	$('.md_loading').modal({
+    	closable  : false,
+	    onHide    : function(){
+	      return true;
+	    }
+	}).modal('hide');
 
 	$(document).on("click", ".msg_image", function(){
 		var source = $(this).attr('src');
 		$('#image_modal').attr('src', source);
 		$('#md_imagemodal').modal('show');
+	});
+
+	$(document).on("click", ".bt_changeadmin", function(){
+		$('.modal').modal('hide');
+		var clicked_id = $(this).attr('id');
+		clicked_id = clicked_id.split('_')[1];
+		$('#ca_ok').attr('value', clicked_id);
+		$('.md_changeadmin').modal('show');
+	});
+
+	$(document).on("click", ".bt_uremoved", function(){
+		$('.modal').modal('hide');
+		var clicked_id = $(this).attr('id');
+		clicked_id = clicked_id.split('_')[1];
+		$('#rs_ok').attr('value', clicked_id);
+		$('.md_removeuser').modal('show');
+	});
+
+	$(document).on("click", "#ur_ok", function(){
+		$('#md_userremoved').modal('hide');
+		var id_room = parseInt($('#ur_ok').attr('value'));
+		var user_room = $('#send_room').val();
+		if(id_room == parseInt(user_room)){
+			go_to("-1");
+		}else{
+			$('.md_loading').modal('show');
+			var removed = '#room_' + id_room;
+			$(removed).remove();
+			$('.md_loading').modal('hide');
+		}
+	});
+
+	$(document).on("click", "#rs_ok", function(){
+		$('.md_removeuser').modal('hide');
+		$('.md_loading').modal('show');
+		var id_removed = $('#rs_ok').attr('value');
+
+		$.ajax({
+			url: window.basicchat_url + "kick_user",
+			type: 'post',
+			dataType : "json",
+			data: { 
+				id: id_removed
+			},
+			success: function(response){
+				window.socket.emit('kick user', $('#grouproom_name').attr('value'), response.room, response.id, response.nama, response.profile_pict);
+				$('.md_loading').modal('hide');
+			},
+			error: function(){
+				$('.md_loading').modal('hide');
+				$('.md_error').modal('show');
+			}
+		});
+	});
+
+	$(document).on("click", "#ca_ok", function(){
+		$('.md_changeadmin').modal('hide');
+		$('.md_loading').modal('show');
+		var id_element = "#comment_" + $('#ca_ok').attr('value');
+
+		$.ajax({
+			url: window.basicchat_url + "change_admin",
+			type: 'post',
+			dataType : "json",
+			data: { 
+				user_id: parseInt($('#ca_ok').attr('value'))
+			},
+			success: function(response){
+				$('.button_placer').remove();
+				$('#admin').appendTo(id_element);
+				$('#au_button').addClass('hiddened');
+				$('.user_menu').prepend('<div style="height: 33px; width: 5px; display: inline-block;" id="heightener"></div>');
+				window.socket.emit('change admin', $('#send_room').val(), parseInt(response), $('#send_user').val());
+				$('.md_loading').modal('hide');
+			},
+			error: function(){
+				$('.modal').modal('hide');
+				$('.md_error').modal('show');
+			}
+		});
 	});
 
 	$(document).on("keyup", "#search_room", function(){
@@ -405,7 +534,7 @@ function init(){
 	        	$('.md_loading').modal('show');
 	        	formData.append('file', file, file.name);
 				$.ajax({
-					url: window.uploadfile_url, 
+					url: window.basicchat_url + "upload_file", 
 					dataType: 'JSON', 
 					cache: false,
 					contentType: false,
@@ -461,7 +590,7 @@ function init(){
 			$('.md_loading').modal('show');
 
 			$.ajax({
-				url: window.createchat_url,
+				url: window.basicchat_url + "create_roomchat",
 				type: 'post',
 				dataType : "json",
 				data: { 
@@ -507,24 +636,26 @@ function init(){
 	});
 
 	$(document).on("click","#lc_ok", function(){
-		$('.modal').modal('hide');
+		$('.md_leavegroup').modal('hide');
 		$('.md_loading').modal('show');
 
 		$.ajax({
-			url: window.leavechat_url,
+			url: window.basicchat_url + "leave_chat",
 			type: 'post',
 			dataType : "json",
 			data: { 
-				room: $('#send_room').val(), 
-				user_id: $('#send_user').val()
+				group_name: $('#grouproom_name').attr('value') 
 			},
 
 			success: function(data){
+				if(data){
+					window.socket.emit('change admin', $('#send_room').val(), parseInt(data), $('#send_user').val());
+				}
 				window.socket.emit('remove user', true);
 			},
 
 			error: function(error){
-				$('.modal').modal('hide');
+				$('.md_loading').modal('hide');
 				$('.md_error').modal('show');
 			}
 		});
@@ -539,7 +670,7 @@ function init(){
 			$('.modal').modal('hide');
 			$('.md_loading').modal('show');
 			$.ajax({
-				url: window.adduser_url,
+				url: window.basicchat_url + "add_user",
 				type: 'post',
 				dataType : "json",
 				data: { 
@@ -550,6 +681,12 @@ function init(){
 					au_cancel();
 					window.socket.emit('add user', $('#send_room').val(), response, $('#grouproom_name').attr('value'), $('#grouproom_image').attr('value'));
 					au_add(response, window.imagebase_url);
+					for(i = 0; i < response.length; i++){
+						var id_element = "#user_" + response[i]['id'];
+						var child_div = $(id_element).children('.comment_area');
+						var temp_placer = '<div class="button_placer"><button class="mini ui red button bt_uremoved" id="uremoved_' + response[i]['id'] + '"><i class="remove user icon"></i>Remove</button><button class="mini ui blue button right floated bt_changeadmin" id="cadmin_' + response[i]['id'] + '">Change Admin</button></div>';
+						child_div.prepend(temp_placer);
+					}
 					$('.modal').modal('hide');
 				},
 				error: function(response){
@@ -590,7 +727,7 @@ function init(){
 			};
 
 			$.ajax({
-				url: window.sendmsg_url,
+				url: window.basicchat_url + "send_msg",
 				type: 'post',
 				dataType : "json",
 				data: data,

@@ -24,6 +24,7 @@
     		var local_tz = moment.tz.guess();
     		$('#timezone').val(local_tz);
     	}
+
         $(document).ready(function() {
             $('.ui.form').form({
                 fields: {
@@ -89,7 +90,7 @@
             </div>
             <div class="ui fluid large blue submit button">Login</div>
           </div>
-          <div class="ui error message"><?php echo validation_errors(); ?></div>
+          <div class="ui error message" <?php echo (validation_errors()? 'style="display:block;"' : ''); ?> ><?php echo (validation_errors()? '<ul class="list"><li>'.validation_errors().'</li></ul>' : ''); ?></div>
         </form>
       </div>
     </div>
