@@ -9,6 +9,7 @@ class notif_request extends CI_Controller {
     $data['notif_birthday'] = $this->Karyawan->showBirthdayRequest();
     $data['notif_event'] = $this->Kalender->showEventRequest();
     $data['notif_greeting'] = $this->Ucapan->showGreetingRequest($id_post);
+    $data['id_ultah'] = $this->input->post('id_ultah');
     $this->load->view('home', $data);
   }
 
