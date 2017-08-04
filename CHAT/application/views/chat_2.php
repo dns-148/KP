@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="<?php echo base_url('asset/css/modified.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Latest compiled JavaScript -->
-    <script src="http://192.168.0.28:3000/socket.io/socket.io.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://semantic-ui.com/dist/semantic.js"></script>
@@ -25,6 +25,8 @@
     <script src="<?php echo base_url(); ?>asset/JS/moment-timezone-with-data.js"></script>
     <script>
         var socket;
+        var check = false;
+        var connect_attemp = 0;
         var server_url = "<?php echo base_url('chat/room?room=') ?>";
         var modal_1_url = "<?php echo base_url('chat/modal') ?> #select_friend  > *";
         var modal_2_url = "<?php echo base_url('chat/modal') ?> #au_select_friend  > *";
@@ -36,76 +38,105 @@
         var imagebase_url = '<?php echo base_url('pro_pict/')?>';
 
         function join(nama, id, img, room, room_list){
-            window.socket = io('http://192.168.0.28:3000')
-            window.socket.emit("join", id, nama, room, room_list, img);
+            isscriptloaded();
+            if(check){
+                window.socket = io('http://localhost:3000', {
+                    reconnection: true, 
+                    reconnectionDelay: 1000,
+                    reconnectionDelayMax: 5000,
+                    reconnectionAttempts: 5
+                });
+                window.socket.emit("join", id, nama, room, room_list, img);
+            }else{
+                serrorconnect();
+            }
         };
 
         function update_page(nama, id, img, room, room_list){
-            window.socket.emit("update data", id, nama, room, room_list, img);
+            window.socket.emit("update data", id, nama, room, JSON.parse(room_list), img);
         };
 
         $(function() { 
-            socket.on('user logout', function(logout_id, remaining_id){
-                logoutuser(logout_id, remaining_id);
-            });
+            if(window.check){
+                socket.on('user logout', function(logout_id, remaining_id){
+                    logoutuser(logout_id, remaining_id);
+                });
 
-            socket.on('new message notif', function(msg, time, room_id, tipe){
-                var server_tz = 'Europe/Berlin';
-                var local_tz = '<?php echo $timezone ?>';
-                var temp_time = moment.tz(time, server_tz);
-                f_time = temp_time.tz(local_tz).format("DD/MM/YYYY HH:mm");
-                var update_url = '<?php echo base_url('chat_manager/update_unread') ?>';
-                newmessage(msg, f_time, $('#send_room').val(), room_id, update_url, tipe);
-            });
+                socket.on('new message notif', function(msg, time, room_id, tipe){
+                    var server_tz = 'Europe/Berlin';
+                    var local_tz = '<?php echo $timezone ?>';
+                    var temp_time = moment.tz(time, server_tz);
+                    f_time = temp_time.tz(local_tz).format("DD/MM/YYYY HH:mm");
+                    var update_url = '<?php echo base_url('chat_manager/update_unread') ?>';
+                    newmessage(msg, f_time, $('#send_room').val(), room_id, update_url, tipe);
+                });
 
-            socket.on('update user', function (list_user){
-                updateuser(list_user);
-            });
+                socket.on('update user', function (list_user){
+                    updateuser(list_user);
+                });
 
-            socket.on('add chat', function(name, image, room) {
-                var new_chat = '<a class="item change_room" style="padding-left: 0px; padding-right: 0px;" id="room_' + room + '"><div class="ui cards"><div class="ui fluid card" style="margin: 0px;"><div class="content"><img class="right floated mini ui image" src="<?php echo base_url('pro_pict/')?>' + image + '"><div class="header">' + name + '</div><div class="meta" id="msg_time_' + room + '"></div><div class="description ui grid"><div class="ten wide column" id="msg_new_' + room + '" style="padding-top:7px; overflow:hidden; max-height: 20.33px; padding-bottom: 0px; margin-bottom:14px;"></div><div class="six wide column" style="padding-top: 0px;"><div class="right floated ui red label hiddened" id="notif_' + room + '"> 0 </div></div></div></div></div></div></a>';
-                    $('#irp').prepend(new_chat);
-                socket.emit('join chat', room, $('#send_user').val());
-            });
+                socket.on('connect', function() {
+                    $('.modal').modal('hide');
+                    window.check = true;
+                    window.socket.emit("join", $('#send_user').val(), $('#sender').text(), $('#send_room').val(), JSON.parse($('#send_all_room').val()), $('#send_img').attr('value'));
+                });
 
-            socket.on('add user', function(response) {
-                au_add(response, '<?php echo base_url('pro_pict/')?>');
-            });
+                socket.on('add chat', function(name, image, room) {
+                    var new_chat = '<a class="item change_room" style="padding-left: 0px; padding-right: 0px;" id="room_' + room + '"><div class="ui cards"><div class="ui fluid card" style="margin: 0px;"><div class="content"><img class="right floated mini ui image" src="<?php echo base_url('pro_pict/')?>' + image + '"><div class="header">' + name + '</div><div class="meta" id="msg_time_' + room + '"></div><div class="description ui grid"><div class="ten wide column" id="msg_new_' + room + '" style="padding-top:7px; overflow:hidden; max-height: 20.33px; padding-bottom: 0px; margin-bottom:14px;"></div><div class="six wide column" style="padding-top: 0px;"><div class="right floated ui red label hiddened" id="notif_' + room + '"> 0 </div></div></div></div></div></div></a>';
+                        $('#irp').prepend(new_chat);
+                    socket.emit('join chat', room, $('#send_user').val());
+                });
 
-            socket.on('remove user', function(id, nama, image){
-                var id_removed = '#user_' + id;
-                var new_available = '<div class="item select_option" data-value="' + id + '" data-text="' + nama + '" id="friend_' + id + '"><img class="ui mini avatar image" src="<?php echo base_url('pro_pict/') ?>' + image + '">' + nama + '</div>'
-                $('#au_select_friend').append(new_available);
-                $(id_removed).remove();
-            });
+                socket.on('add user', function(response) {
+                    au_add(response, '<?php echo base_url('pro_pict/')?>');
+                });
 
-            socket.on('removed', function(status){
-                go_to("-1");
-            });
+                socket.on('remove user', function(id, nama, image){
+                    var id_removed = '#user_' + id;
+                    var new_available = '<div class="item select_option" data-value="' + id + '" data-text="' + nama + '" id="friend_' + id + '"><img class="ui mini avatar image" src="<?php echo base_url('pro_pict/') ?>' + image + '">' + nama + '</div>'
+                    $('#au_select_friend').append(new_available);
+                    $(id_removed).remove();
+                });
 
-            socket.on('chat message', function(id, who, msg, s_time, img, tipe) {
-                var server_tz = 'Europe/Berlin';
-                var local_tz = '<?php echo $timezone ?>';
-                var temp_time = moment.tz(s_time, server_tz);
-                s_time = temp_time.tz(local_tz).format("DD/MM/YYYY HH:mm");
-                var time = " • " + s_time;
-                var img_url = '<?php echo base_url('pro_pict/') ?>' + img;
-                    
-                receivemessage(id, $('#send_user').val(), who, msg, time, img_url, tipe);
-                scrolltobottom();
-            });
+                socket.on('removed', function(status){
+                    go_to("-1");
+                });
+
+                socket.on('reconnect_failed', function(){
+                    $('.modal').modal('hide');
+                    serrorreconnect();
+                });
+
+                socket.on('disconnect', function(){
+                    window.check = false;
+                    serrordisconnect();
+                });
+
+                socket.on('chat message', function(id, who, msg, s_time, img, tipe) {
+                    var server_tz = 'Europe/Berlin';
+                    var local_tz = '<?php echo $timezone ?>';
+                    var temp_time = moment.tz(s_time, server_tz);
+                    s_time = temp_time.tz(local_tz).format("DD/MM/YYYY HH:mm");
+                    var time = " • " + s_time;
+                    var img_url = '<?php echo base_url('pro_pict/') ?>' + img;
+                        
+                    receivemessage(id, $('#send_user').val(), who, msg, time, img_url, tipe);
+                    scrolltobottom();
+                });
+            }
         });    
     </script>
 </head>
 <body>
     <!-- Modal Error -->
-    <div class="ui basic modal md_error">
+    <div class="ui basic coupled modal md_error">
         <div class="ui icon header">
-            <i class="frown icon"></i>Request Failed
+            <i class="frown icon"></i><text id="error_header">Request Failed</text>
         </div>
         <div class="content">
             <div class="ui center aligned segment" style="background: transparent;">
-                <p>Sorry! There is error occuring, your request cannot be proccesed this time.</p>
+                <p id="error_content">Sorry! There is error occuring, your request cannot be proccesed this time.</p>
+                <p id="error_content2">If the error is persistent. Try to contact your administrator.</p>
                 <div class="actions">
                     <div class="ui blue ok inverted button">
                         <i class="checkmark icon"></i>Ok
@@ -115,7 +146,7 @@
         </div>
     </div>
     <!-- END of Error -->
-    <!-- Modal Error -->
+    <!-- Modal Error File -->
     <div class="ui basic modal md_errorfile">
         <div class="ui icon header">
             <i class="warning sign icon"></i>Upload File Failed
@@ -133,7 +164,7 @@
             </div>
         </div>
     </div>
-    <!-- END of Error -->
+    <!-- END of Error File -->
     <!-- Modal Image -->
     <div class="ui basic modal" id="md_imagemodal">
         <div class="header actions">
@@ -146,6 +177,21 @@
         </div>
     </div>
     <!-- END of Modal Image -->
+    <!-- Modal Reconnect -->
+    <div class="ui basic coupled modal md_reconnect">
+        <div class="ui icon header">
+            <div class="ui segment" style="background: transparent;">
+                <div class="ui large loader"></div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="ui  center aligned segment" style="background: transparent;">
+                <p>Reconnecting to server...</p>
+                <p>You're discconnected from server, please wait a few minute while the application try to reconnect.</p>
+            </div>
+        </div>
+    </div>
+    <!-- END of Reconnect -->
     <!-- Modal Loading -->
     <div class="ui basic modal md_loading">
         <div class="ui icon header">
@@ -400,7 +446,7 @@
             </div>
             <input type="hidden" id="send_room" value="<?php echo $room ?>"/>
             <input type="hidden" id="send_user" value="<?php echo $id ?>"/>
-            <input type="hidden" id="send_all_room" value="<?php if($room > -2 ){ $temp = []; if($allroom_info){foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }}else{$temp = -1;}; echo json_encode($temp); }else{ echo '';}; ?>"/>
+            <input type="hidden" id="send_all_room" value="<?php $temp = array(); if($allroom_info){foreach ($allroom_info as $row) { array_push($temp, (int)$row['id_room']); }}else{$temp = -1;}; echo json_encode($temp);?>"/>
             <div class="ui wide inverted right vertical sidebar menu visible" id="bg_groupuser" style="width: 20vw; overflow: hidden;">
                 <div id="user_container" style="overflow:hidden;">
                     <?php if($room_info){ ?>
@@ -437,6 +483,6 @@
 <script>
     attach_basic();
     init();
-    join('<?php echo $nama ?>', '<?php echo $id ?>', '<?php echo $profilepict ?>', '<?php echo $room ?>', <?php $temp = []; if($allroom_info){foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }}else{$temp = -1;}; echo json_encode($temp);?>);
+    join('<?php echo $nama ?>', '<?php echo $id ?>', '<?php echo $profilepict ?>', '<?php echo $room ?>', <?php $temp = array(); if($allroom_info){foreach ($allroom_info as $row) { array_push($temp, $row['id_room']); }}else{$temp = -1;}; echo json_encode($temp);?>);
 </script>
 </html>

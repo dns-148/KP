@@ -101,8 +101,7 @@
                             <?php
                                 $user_tz = new DateTimeZone($timezone);
                                 if($list_chat){
-                                    echo '<input type="hide" id="first_chat" value="#chat_'.$list_chat[0]["idChat"].'"/>';
-                                    echo '<input type="hide" id="last_chat" value="'.$list_chat[count($list_chat) - 1]["idChat"].'"/>';
+                                    echo '<input type="hidden" id="last_chat" value="'.$list_chat[count($list_chat) - 1]["idChat"].'"/>';
                                     foreach ($list_chat as $row) {
                                         $past_timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $row['time']);
                                         $past_timestamp->setTimeZone($user_tz);
@@ -150,7 +149,7 @@
             </div>
             <input type="hidden" id="send_room" value="<?php echo $room ?>"/>
             <input type="hidden" id="send_user" value="<?php echo ($room > -2? $id : NULL) ?>"/>
-            <input type="hidden" id="send_all_room" value="<?php if($room > -2 ){ $temp = []; if($allroom_info){foreach ($allroom_info as $row) { $temp[] = $row['id_room']; }}else{$temp = -1;}; echo json_encode($temp); }else{ echo '';}; ?>"/>
+            <input type="hidden" id="send_all_room" value="<?php $temp = array(); if($allroom_info){foreach ($allroom_info as $row) { array_push($temp, (int)$row['id_room']); }}else{$temp = -1;}; echo json_encode($temp);?>"/>
             <div class="ui wide inverted right vertical sidebar menu visible" id="bg_groupuser" style="width: 20vw; overflow: hidden;">
                 <div id="user_container" style="overflow:hidden;">
                     <?php if($room_info){ ?>

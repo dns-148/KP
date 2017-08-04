@@ -1,9 +1,46 @@
+function isscriptloaded(){
+	if(typeof io === "function"){
+		window.check = true;
+	}
+}
+
+function serrordisconnect(){
+	$('.modal').modal('hide');
+	$('.md_reconnect').modal('setting', 'closable', false).modal('show');
+}
+
+function serrorconnect(){
+	$('.modal').modal('hide');
+	$('#error_header').text('Connection Failed');
+	$('#error_content').text('The application failed to establish connection to server, please refreh the webpage.');
+	$('.md_error').modal({
+		onHidden    : function(){
+			$('#error_header').text('Request Failed');
+			$('#error_content').text('Sorry! There is error occuring, your request cannot be proccesed this time.');
+			$('#error_content2').text('If the error is persistent. Try to contact your administrator.');
+		},
+	}).modal('show');
+}
+
+function serrorreconnect(){
+	$('.modal').modal('hide');
+	$('#error_header').text('Reconnect Failed');
+	$('#error_content').text("Unable to reconnect to chat server, please try to refresh the webpage.");
+	$('.md_error').modal({
+		onHidden    : function(){
+			$('#error_header').text('Request Failed');
+			$('#error_content').text('Sorry! There is error occuring, your request cannot be proccesed this time.');
+			$('#error_content2').text("If the error is persistent. Try to contact your administrator.");
+		},
+	}).modal('show');
+}
+
 function go_to(room){
 	mod_server_url =  window.server_url + room + " #body_page  > *"
 
 	$("#body_page").load(mod_server_url, function(response, status, xhr) {
 		if ( status == "error" ) {
-			$('.md_loading').modal('hide');
+			$('.modal').modal('hide');
 			$('.md_error').modal('show');
 		}else{
 			cc_cancel();
@@ -16,11 +53,13 @@ function go_to(room){
 				$('#au_select_friend').empty();
 				$('#au_select_friend').load(window.modal_2_url);
 			}
-			update_page($('#sender').text(), $('#send_user').val(), $('#send_img').attr('value'), $('#send_room').val(), $('#send_all_room').val());
+			if(window.check){
+				update_page($('#sender').text(), $('#send_user').val(), $('#send_img').attr('value'), $('#send_room').val(), $('#send_all_room').val());
+			}
 			check_size();
 			attach_basic();
 			scroll($('#unread').attr('value'), $('#list_chat').attr('value'));
-			$('.md_loading').modal('hide');
+			$('.modal').modal('hide');
 		}
 	});
 }
@@ -164,7 +203,7 @@ function receivemessage(sender_id, id, who, msg, time, img_url, tipe){
 
 function scrolltobottom(){
 	var distance = $('.main')[0].scrollHeight;
-	$('.main').animate({scrollTop: distance}, 'slow');
+	$('.main').animate({scrollTop: distance}, 'medium');
 }
 
 function attach_basic(){
@@ -192,10 +231,8 @@ function scroll(unread, count_chat){
 			var c_id = parseInt($('#last_chat').val()) - unread;
 			c_id = "#chat_" + c_id;
 			var child = $(c_id);
-			var p_id = $('#first_chat').val();
-			var parent = $(p_id);
-			var distance =  child.offset().top - parent.offset().top;
-			$('.main').animate({scrollTop: distance}, 'slow');
+			var distance =  child.offset().top;
+			$('.main').animate({scrollTop: distance}, 'fast');
 		}else{
 			scrolltobottom();
 		}
@@ -319,7 +356,7 @@ $(window).on('load', check_size);
 
 $(window).on('resize',check_size);
 
-function init(){
+function init(){	
 	$(document).on("click", ".msg_image", function(){
 		var source = $(this).attr('src');
 		$('#image_modal').attr('src', source);
@@ -349,7 +386,7 @@ function init(){
 	});
 
 	$(document).on("click","#sf_send", function(){
-		$('.md_sendfile').modal('hide');
+		$('.modal').modal('hide');
 		$('.md_loading').modal('setting', 'closable', false).modal('show');
 
 		var fileSelect = document.getElementById('upload_file');
@@ -370,14 +407,14 @@ function init(){
 					$('#upload_file').val('');
 					$('#form_file')[0].reset();
 					socket.emit('chat message', data.url, data.tipe, data.time);
-					$('.md_loading').modal('hide');
+					$('.modal').modal('hide');
 				}else{
-					$('.md_loading').modal('hide');
+					$('.modal').modal('hide');
 					$('.md_errorfile').modal('show');
 				}
 			},
 			error: function(data){
-				$('.md_loading').modal('hide');
+				$('.modal').modal('hide');
 				$('.md_error').modal('show');
 			}
 		});
@@ -396,7 +433,7 @@ function init(){
 
 	$(document).on("click","#ok_createchat", function(){
 		if($('#cc_chat_name').val() && $('#cc_friend_list').val()) {
-			$('#md_createchat').modal('hide');
+			$('.modal').modal('hide');
 			$('.md_loading').modal('setting', 'closable', false).modal('show');
 
 			$.ajax({
@@ -416,7 +453,7 @@ function init(){
 					go_to(response.room);
 				},
 				error: function(){
-					$('.md_loading').modal('hide');
+					$('.modal').modal('hide');
 					$('.md_error').modal('show');
 				}
 			});
@@ -436,17 +473,17 @@ function init(){
 	});
 
 	$(document).on("click","#cancel_createchat", function(){ 
-		$('#md_createchat').modal('hide');
+		$('.modal').modal('hide');
 		cc_cancel();
 	});
 
 	$(document).on("click","#au_cancel", function(){
-		$('.md_adduser').modal('hide');
+		$('.modal').modal('hide');
 		au_cancel();
 	});
 
 	$(document).on("click","#lc_ok", function(){
-		$('.md_leavegroup').modal('hide');
+		$('.modal').modal('hide');
 		$('.md_loading').modal('show');
 
 		$.ajax({
@@ -463,7 +500,7 @@ function init(){
 			},
 
 			error: function(error){
-				$('.md_loading').modal('hide');
+				$('.modal').modal('hide');
 				$('.md_error').modal('show');
 			}
 		});
@@ -471,7 +508,7 @@ function init(){
 
 	$(document).on("click","#au_add", function(){
 		if($('#au_list').val()) {
-			$('.md_adduser').modal('hide');
+			$('.modal').modal('hide');
 			$('.md_loading').modal('setting', 'closable', false).modal('show');
 			$.ajax({
 				url: window.adduser_url,
@@ -485,10 +522,10 @@ function init(){
 					au_cancel();
 					window.socket.emit('add user', $('#send_room').val(), response, $('#grouproom_name').attr('value'), $('#grouproom_image').attr('value'));
 					au_add(response, window.imagebase_url);
-					$('.md_loading').modal('hide');
+					$('.modal').modal('hide');
 				},
 				error: function(response){
-					$('.md_loading').modal('hide');
+					$('.modal').modal('hide');
 					$('.md_error').modal('show');
 				}
 			});

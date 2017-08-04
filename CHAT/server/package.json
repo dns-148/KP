@@ -5,7 +5,7 @@
   "dependencies": {
     "express": "latest",
     "pug": "latest",
-    "redis": "lates",
+    "log4js": "latest",
     "socket.io": "^2.0.3"
   },
   "author": "developer"
