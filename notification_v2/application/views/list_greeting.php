@@ -204,7 +204,7 @@
                           echo'<li>
                           <div class="col-md-3 col-sm-3 col-xs-3"><div class="notify-img"><img src="';echo base_url('assets/images/gift.png'); echo '"></div></div>
                           <div class="col-md-9 col-sm-9 col-xs-9 pd-l0">
-                          <a href="';echo base_url('birthday/show_greeting?id='); echo $row->id_ultah; echo '" class=\"'.$strip.'\">Happy birthday '.$row->nama.'!</a>
+                          <a href="';echo base_url('birthday/load_birthday?id='); echo $row->id_karyawan; echo '" class=\"'.$strip.'\">Happy birthday '.$row->nama.'!</a>
                           <hr>
                           <div>
                             <span>
