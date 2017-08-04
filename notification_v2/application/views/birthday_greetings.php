@@ -344,10 +344,9 @@
                     </span>
                 </div>
               </form>
-              <ul class="comments-list" style="min-height: 280px; max-height: 280px; overflow-y: auto;">
-                    <?php
-                    if(count($list_ucapan) > 0)
-                    {
+              <?php if(count($list_ucapan) > 0)
+              {
+                echo "<ul class='comments-list' style='min-height: 280px; max-height: 280px; overflow-y: auto;'>";
                       foreach ($list_ucapan as $row) {
                         echo "<li class='comment'>
                         <a class='pull-left' style='margin-left:9px; margin-right:9px;'>";
@@ -374,8 +373,7 @@
                               </div>
                         </li>";
                       }
-                    } ?>
-              </ul>
+              echo "</ul>"; } ?>
             </div>
         </div>
     </div>
